@@ -1,0 +1,1173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>⬡ Medicare HQ — Brandon Schlobohm</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&family=IBM+Plex+Sans:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body,#root{height:100%;background:#0a0c0f}
+  ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:#0d1017}::-webkit-scrollbar-thumb{background:#1e2a3a;border-radius:2px}
+  @media print{
+    #mhq-nav,#mhq-sidebar,#mhq-intake{display:none!important}
+    #mhq-cl{grid-column:1/-1!important;border:none!important}
+    body{background:#fff;color:#111}
+    .cl-text{color:#111!important;font-size:14px!important;line-height:1.9!important}
+  }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState, useRef, useEffect, useCallback } = React;
+
+/* ═══════════════════════════════════════════════════════
+   STATIC DATA
+═══════════════════════════════════════════════════════ */
+const PROFILE = {
+  name:"Brandon Schlobohm", title:"Senior Remote Medicare Sales Agent",
+  npn:"17087538", phone:"(620) 412-7476", email:"bschlo83@icloud.com",
+  specialties:["MAPD","DSNP","Medicare Supplement"],
+  crm:["Salesforce","Sunfire","Zoho CRM"],
+  certifications:["AHIP","Salesforce Certified","Microsoft Office Specialist"],
+};
+
+const DEFAULT_RESUME = `BRANDON SCHLOBOHM
+Reading, KS 66868 | Available for Remote Work
+(620) 412-7476 | bschlo83@icloud.com | NPN: 17087538
+
+SENIOR REMOTE MEDICARE SALES AGENT
+Exceptional Conversion and Revenue Generation
+Licensed in 36 States | Aetna Appointed | Over Six Years of AEP/OEP Experience
+
+─────────────────────────────────────────
+CAREER HIGHLIGHTS
+─────────────────────────────────────────
+• Elite Conversion Rate: Generated over 48% more conversions than the industry benchmark (15-20%), achieving an MAPD conversion rate peaking at 29.84% during the highest-volume AEP month.
+• Immediate Revenue Readiness: Maintain 36 active state licenses (Resident KS; Non-Resident 35 states) and active Aetna appointments, enabling immediate, compliant revenue production across a multi-state territory.
+• Compliance & Retention: 6+ years of CMS-compliant consultative enrollments across MAPD, DSNP, and Medicare Supplement products with a pristine regulatory record.
+
+─────────────────────────────────────────
+PROFESSIONAL EXPERIENCE
+─────────────────────────────────────────
+Licensed Medicare Sales Agent | TTEC (Remote) | Aug 2025 – Present
+• Drive exceptional revenue performance by consistently maintaining above-industry MAPD conversion rates (peaking at 29.84%) throughout the full AEP/OEP cycle.
+• Conduct personalized Medicare consultations, precisely aligning MAPD and DSNP plans to beneficiary healthcare needs, financial constraints, and dual-eligible status.
+• Manage full-cycle CRM pipeline across 36 states, maintaining 100% CMS compliance and enrollment accuracy from initial contact to post-enrollment.
+
+Licensed Medicare Specialist (OEP) | Exact Medicare (Remote) | Jan 2025 – Apr 2025
+• Managed heavy OEP volume under strict CMS deadlines, processing complex MAPD plan changes and new enrollments with high accuracy.
+• Verified dual-eligible member eligibility and successfully navigated escalations for complex DSNP coverage scenarios.
+
+Medicare Sales Agent | Everise (Remote) | Aug 2024 – Jan 2025
+• Enrolled Medicare-eligible beneficiaries in MAPD and Supplement products through needs-based consultations across a multi-state territory.
+• Maintained meticulous CRM records of all sales activities, ensuring pipeline accuracy and total compliance audit readiness.
+
+Medicare Sales Representative | Concentrix (Remote) | Aug 2022 – Jan 2023
+• Managed the full sales cycle for inbound and outbound call models, counseling beneficiaries on MAPD/DSNP eligibility and CMS guidelines.
+
+Medicare Sales Agent | Blue Cross Blue Shield of Kansas | Sep 2021 – Jan 2022
+• Educated members on plan features, premium structures, and network benefits, driving phone-based MAPD and Medigap enrollments.
+
+─────────────────────────────────────────
+EDUCATION & CERTIFICATIONS
+─────────────────────────────────────────
+• AHIP Certification: Current
+• Active Licenses: Life & Health Insurance (36 states, expires May 2027)
+• Technical Certifications: Salesforce Certified, Microsoft Office Specialist, Citrix Certified
+• Bachelor of Arts, Sociology: Pittsburg State University
+
+─────────────────────────────────────────
+TECHNICAL & CRM SKILLS
+─────────────────────────────────────────
+Salesforce | Microsoft 365 | Sunfire | Zoho CRM | Google Workspace | Citrix`;
+
+const COMPANIES = [
+  { name:"GoHealth",            tier:1, type:"Health-Tech", focus:"MAPD/Supplement", notes:"W2 + leads + strong tech stack" },
+  { name:"Humana",              tier:1, type:"Carrier",     focus:"MAPD/DSNP",       notes:"Remote-first; excellent comp package" },
+  { name:"UnitedHealthcare",    tier:1, type:"Carrier",     focus:"MAPD",            notes:"High volume; strict compliance culture" },
+  { name:"Aetna / CVS Health",  tier:1, type:"Carrier",     focus:"MAPD",            notes:"Already appointed — huge advantage" },
+  { name:"Integrity Marketing", tier:1, type:"FMO",         focus:"MAPD/Supplement", notes:"Rapidly acquiring; W2 roles growing" },
+  { name:"Wellcare / Centene",  tier:2, type:"Carrier",     focus:"DSNP",            notes:"Strong DSNP fit for dual-eligible exp" },
+  { name:"eHealth",             tier:2, type:"Health-Tech", focus:"Multi-carrier",   notes:"Tech-forward; digital-native ops" },
+  { name:"HealthMarkets",       tier:2, type:"FMO",         focus:"Multi-carrier",   notes:"W2 + commission; multi-carrier" },
+  { name:"Chapter",             tier:2, type:"Advisory",    focus:"Consultative",    notes:"High-touch model; premium clientele" },
+  { name:"Cigna / Evernorth",   tier:2, type:"Carrier",     focus:"MAPD",            notes:"Growing Medicare footprint" },
+  { name:"BCBS Affiliates",     tier:2, type:"Carrier",     focus:"MAPD/Supplement", notes:"State-by-state; check local plans" },
+  { name:"Other / Custom",      tier:2, type:"Other",       focus:"TBD",             notes:"Enter custom details below" },
+];
+
+const JOB_SOURCES = ["Indeed","ZipRecruiter","LinkedIn Jobs","Glassdoor","Company Website","Recruiter Email","Other"];
+const HUNT_TOOLS  = ["Job Outreach","Interview Prep","Offer Evaluator","✨ Audio Pitch"];
+const JOB_STATUSES = ["Applied","Phone Screen","Interview","Offer","Closed"];
+const STATUS_COLORS = {
+  "Applied":      {bg:"#0d1828",color:"#4a8ac8",border:"#1a3a58"},
+  "Phone Screen": {bg:"#1a1428",color:"#8a6ad0",border:"#2e1e58"},
+  "Interview":    {bg:"#0d1e14",color:"#4ab87a",border:"#1a4028"},
+  "Offer":        {bg:"#1a1804",color:"#e0b020",border:"#3a3010"},
+  "Closed":       {bg:"#110d0d",color:"#6a4040",border:"#2a1818"},
+};
+const INTERVIEW_QS = [
+  "What's your MAPD conversion rate, and how do you achieve it?",
+  "Walk me through handling a dual-eligible beneficiary in a DSNP scenario.",
+  "How do you ensure CMS compliance during peak AEP volume?",
+  "Describe your process for a beneficiary confused about MAPD vs Original Medicare.",
+  "How do you handle late enrollment objections or plan change hesitancy?",
+  "What CRM tools have you used, and how do you manage your pipeline?",
+  "Why are you leaving your current role?",
+  "How do you stay current on carrier plan changes and CMS updates?",
+];
+
+/* ═══════════════════════════════════════════════════════
+   API HELPERS
+═══════════════════════════════════════════════════════ */
+
+/* FIX: Only retry on 5xx / network errors — not 4xx auth failures */
+const fetchWithRetry = async (url, options, delays = [800, 2000, 5000]) => {
+  let lastErr;
+  for (let i = 0; i <= delays.length; i++) {
+    try {
+      const res = await fetch(url, options);
+      /* Don't retry client errors (4xx) — surface them immediately */
+      if (res.status >= 400 && res.status < 500) return res;
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      return res;
+    } catch (err) {
+      lastErr = err;
+      if (i < delays.length) await new Promise(r => setTimeout(r, delays[i]));
+    }
+  }
+  throw lastErr;
+};
+
+async function callClaude(prompt, sys, key) {
+  const body = { model:"claude-sonnet-4-20250514", max_tokens:1100,
+    messages:[{role:"user",content:prompt}] };
+  if (sys) body.system = sys;
+  try {
+    const res = await fetch("https://api.anthropic.com/v1/messages", {
+      method:"POST",
+      headers:{
+        "Content-Type":"application/json","x-api-key":key,
+        "anthropic-version":"2023-06-01",
+        "anthropic-dangerous-direct-browser-access":"true",
+      },
+      body:JSON.stringify(body),
+    });
+    if (!res.ok) {
+      const e = await res.json().catch(()=>({}));
+      if (res.status===401) return "❌ Invalid API key — open ⚙ Settings to update it.";
+      if (res.status===429) return "❌ Rate limit — wait a moment and try again.";
+      if (res.status===400) return `❌ Bad request: ${e.error?.message||"check prompt length"}`;
+      return `❌ API error ${res.status}: ${e.error?.message||"unknown"}`;
+    }
+    const d = await res.json();
+    return d.content?.map(b=>b.text||"").join("") || "No response.";
+  } catch(e) { return `❌ Network error: ${e.message}`; }
+}
+
+async function callGeminiText(prompt, sysP, isJson, key) {
+  if (!key) throw new Error("Gemini API key required");
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${key}`;
+  const payload = {
+    contents:[{parts:[{text:prompt}]}],
+    systemInstruction:{parts:[{text:sysP}]},
+  };
+  if (isJson) payload.generationConfig = {
+    responseMimeType:"application/json",
+    responseSchema:{type:"OBJECT",properties:{
+      score:{type:"INTEGER"}, summary:{type:"STRING"},
+      missingKeywords:{type:"ARRAY",items:{type:"STRING"}},
+    }},
+  };
+  const res = await fetchWithRetry(url,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error?.message || `Gemini error ${res.status}`);
+  const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+  if (!text) throw new Error("Empty response from Gemini");
+  return text;
+}
+
+async function callGeminiTTS(text, key) {
+  if (!key) throw new Error("Gemini API key required");
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${key}`;
+  const payload = {
+    contents:[{parts:[{text}]}],
+    generationConfig:{
+      responseModalities:["AUDIO"],
+      speechConfig:{voiceConfig:{prebuiltVoiceConfig:{voiceName:"Aoede"}}},
+    },
+  };
+  const res = await fetchWithRetry(url,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error?.message || `TTS error ${res.status}`);
+  const inlineData = data.candidates?.[0]?.content?.parts?.[0]?.inlineData;
+  if (!inlineData?.data) throw new Error("No audio returned — TTS may be unavailable in your region or API tier.");
+  const rateMatch = (inlineData.mimeType||"").match(/rate=(\d+)/);
+  const sr = rateMatch ? parseInt(rateMatch[1]) : 24000;
+  const bin = window.atob(inlineData.data);
+  const bytes = new Uint8Array(bin.length);
+  for (let i=0;i<bin.length;i++) bytes[i]=bin.charCodeAt(i);
+  const pcm = new Int16Array(bytes.buffer);
+  const wav = new ArrayBuffer(44+pcm.length*2);
+  const v = new DataView(wav);
+  v.setUint32(0,0x52494646,false); v.setUint32(4,36+pcm.length*2,true);
+  v.setUint32(8,0x57415645,false); v.setUint32(12,0x666d7420,false);
+  v.setUint32(16,16,true); v.setUint16(20,1,true); v.setUint16(22,1,true);
+  v.setUint32(24,sr,true); v.setUint32(28,sr*2,true);
+  v.setUint16(32,2,true); v.setUint16(34,16,true);
+  v.setUint32(36,0x64617461,false); v.setUint32(40,pcm.length*2,true);
+  for (let i=0;i<pcm.length;i++) v.setInt16(44+i*2,pcm[i],true);
+  return URL.createObjectURL(new Blob([wav],{type:"audio/wav"}));
+}
+
+/* ═══════════════════════════════════════════════════════
+   RESUME PREVIEW
+═══════════════════════════════════════════════════════ */
+function ResumePreview({text}) {
+  return (
+    <div style={{fontFamily:"'IBM Plex Sans',sans-serif",fontSize:12,lineHeight:1.65,color:"#b8cce0"}}>
+      {text.split("\n").map((line,i)=>{
+        const t=line.trim();
+        if(!t) return <div key={i} style={{height:4}}/>;
+        if(i===0) return <div key={i} style={{fontSize:17,fontWeight:700,color:"#e8f4ff",marginBottom:2}}>{t}</div>;
+        if(i===1||i===2) return <div key={i} style={{color:"#5a7a9a",fontSize:10,marginBottom:i===2?11:2}}>{t}</div>;
+        if(t.startsWith("─")) return <hr key={i} style={{border:"none",borderTop:"1px solid #1a2a3a",margin:"9px 0 5px"}}/>;
+        if(t===t.toUpperCase()&&t.length>3&&!t.startsWith("•")&&!t.includes("|")&&!/\d/.test(t))
+          return <div key={i} style={{color:"#f0b429",fontSize:9,fontWeight:700,letterSpacing:2,marginBottom:6,fontFamily:"'IBM Plex Mono',monospace"}}>{t}</div>;
+        if(t.includes("|")&&(t.includes("20")||t.includes("Present"))){
+          const p=t.split("|");
+          return <div key={i} style={{marginBottom:3,marginTop:6}}>
+            <span style={{fontWeight:700,color:"#ddeeff"}}>{p[0].trim()}</span>
+            {p.slice(1).map((s,j)=><span key={j} style={{color:"#4a6a8a"}}> · {s.trim()}</span>)}
+          </div>;
+        }
+        if(t.startsWith("•")) return <div key={i} style={{paddingLeft:12,marginBottom:2,position:"relative",color:"#8aaac4"}}>
+          <span style={{position:"absolute",left:0,color:"#f0b429"}}>•</span>{t.slice(1).trim()}
+        </div>;
+        if(t.includes(" | ")&&!t.includes("20")) return <div key={i} style={{display:"flex",flexWrap:"wrap",gap:5,marginTop:3}}>
+          {t.split(" | ").map((s,j)=><span key={j} style={{background:"#111d2a",border:"1px solid #1e3048",borderRadius:3,padding:"2px 6px",color:"#7eb8f7",fontSize:10}}>{s.trim()}</span>)}
+        </div>;
+        if(i===3) return <div key={i} style={{fontWeight:700,fontSize:13,color:"#d0e8ff",marginBottom:2}}>{t}</div>;
+        if(i===4) return <div key={i} style={{color:"#5a7a9a",fontStyle:"italic",fontSize:10,marginBottom:2}}>{t}</div>;
+        if(i===5) return <div key={i} style={{color:"#4a6070",fontSize:10,marginBottom:10}}>{t}</div>;
+        return <div key={i} style={{marginBottom:2}}>{t}</div>;
+      })}
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════
+   TOAST SYSTEM — dismissible, typed
+═══════════════════════════════════════════════════════ */
+function Toasts({toasts, onDismiss}) {
+  if (!toasts.length) return null;
+  const colors = {
+    error:  {bg:"#1a0808",border:"#5a1a1a",color:"#e07070"},
+    success:{bg:"#081a0e",border:"#1a5a2e",color:"#64d2a4"},
+    info:   {bg:"#0d1118",border:"#2a3a50",color:"#a8cce0"},
+  };
+  return (
+    <div style={{position:"fixed",bottom:20,right:20,display:"flex",flexDirection:"column",gap:8,zIndex:2000}}>
+      {toasts.map(t=>{
+        const c=colors[t.type]||colors.info;
+        return (
+          <div key={t.id} onClick={()=>onDismiss(t.id)} style={{
+            background:c.bg,border:`1px solid ${c.border}`,color:c.color,
+            padding:"9px 14px 9px 14px",borderRadius:6,fontSize:12,cursor:"pointer",
+            fontFamily:"'IBM Plex Sans',sans-serif",lineHeight:1.4,maxWidth:340,
+            boxShadow:"0 4px 20px rgba(0,0,0,.6)",animation:"fadeIn .2s ease",
+            display:"flex",alignItems:"flex-start",gap:10,
+          }}>
+            <span style={{flex:1}}>{t.msg}</span>
+            <span style={{opacity:.5,fontSize:10,marginTop:1,flexShrink:0}}>✕</span>
+          </div>
+        );
+      })}
+      <style>{`@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}`}</style>
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════
+   SETTINGS MODAL
+═══════════════════════════════════════════════════════ */
+function SettingsModal({apiKey, geminiKey, onSave, onClose}) {
+  const [v,setV]=useState(apiKey||"");
+  const [g,setG]=useState(geminiKey||"");
+  /* FIX: Enter key works on both fields */
+  const handleEnter = e => { if(e.key==="Enter") onSave(v,g); };
+  const KeyBadge = ({set}) => (
+    <span style={{marginLeft:8,fontSize:9,padding:"1px 7px",borderRadius:10,letterSpacing:1,
+      background:set?"#0a1e0f":"#1a0a0a",color:set?"#64d2a4":"#e06040",
+      border:`1px solid ${set?"#1a5a2e":"#5a1a1a"}`}}>
+      {set?"SET":"NOT SET"}
+    </span>
+  );
+  return (
+    <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.87)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:1000}}>
+      <div style={{background:"#0d1118",border:"1px solid #1e2a3a",borderRadius:8,padding:30,width:480,maxWidth:"92vw"}}>
+        <div style={{fontFamily:"'IBM Plex Sans',sans-serif",fontWeight:700,color:"#e0f0ff",fontSize:15,marginBottom:5}}>⚙ Settings & API Keys</div>
+        <div style={{color:"#3a5a70",fontSize:11,lineHeight:1.7,marginBottom:20}}>
+          Keys are saved in your browser only — never sent anywhere except directly to Anthropic and Google.
+        </div>
+        <div style={{marginBottom:16}}>
+          <div style={{color:"#2a4050",fontSize:9,letterSpacing:2,textTransform:"uppercase",marginBottom:5,display:"flex",alignItems:"center"}}>
+            Anthropic API Key (Claude — required)<KeyBadge set={!!apiKey}/>
+          </div>
+          <input type="password" placeholder="sk-ant-api03-..." value={v}
+            onChange={e=>setV(e.target.value)} onKeyDown={handleEnter}
+            aria-label="Anthropic API key"
+            style={{background:"#060a0f",border:"1px solid #1a2a3a",borderRadius:4,padding:"9px 13px",color:"#b8cce0",fontFamily:"'IBM Plex Mono',monospace",fontSize:13,width:"100%",outline:"none"}}/>
+          <div style={{fontSize:10,color:"#2a4050",marginTop:4}}>
+            Get a key at <a href="https://console.anthropic.com/account/keys" target="_blank" rel="noopener" style={{color:"#f0b429"}}>console.anthropic.com</a>
+          </div>
+        </div>
+        <div style={{marginBottom:22}}>
+          <div style={{color:"#2a4050",fontSize:9,letterSpacing:2,textTransform:"uppercase",marginBottom:5,display:"flex",alignItems:"center"}}>
+            Gemini API Key (Voice + Fit Check — optional)<KeyBadge set={!!geminiKey}/>
+          </div>
+          <input type="password" placeholder="AIzaSy..." value={g}
+            onChange={e=>setG(e.target.value)} onKeyDown={handleEnter}
+            aria-label="Gemini API key"
+            style={{background:"#060a0f",border:"1px solid #1a2a3a",borderRadius:4,padding:"9px 13px",color:"#b8cce0",fontFamily:"'IBM Plex Mono',monospace",fontSize:13,width:"100%",outline:"none"}}/>
+          <div style={{fontSize:10,color:"#2a4050",marginTop:4}}>
+            Free at <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener" style={{color:"#64d2a4"}}>aistudio.google.com</a> — powers Audio Pitch and Resume Fit
+          </div>
+        </div>
+        <div style={{display:"flex",gap:9,justifyContent:"flex-end"}}>
+          {apiKey&&<button onClick={onClose} style={{background:"none",border:"1px solid #1e2a3a",color:"#5a7a9a",fontFamily:"'IBM Plex Mono',monospace",fontSize:11,padding:"7px 15px",borderRadius:4,cursor:"pointer"}}>Cancel</button>}
+          <button onClick={()=>onSave(v,g)} style={{background:"#f0b429",border:"none",color:"#080a0c",fontFamily:"'IBM Plex Mono',monospace",fontWeight:700,fontSize:11,padding:"7px 18px",borderRadius:4,cursor:"pointer"}}>
+            Save & Launch
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════
+   MAIN APP
+═══════════════════════════════════════════════════════ */
+function App() {
+  const [apiKey,       setApiKey]      = useState(()=>localStorage.getItem("mhq_apikey")||"");
+  const [geminiKey,    setGeminiKey]   = useState(()=>localStorage.getItem("mhq_gemini")||"");
+  const [resume,       setResume]      = useState(()=>localStorage.getItem("mhq_resume")||DEFAULT_RESUME);
+  const [jobs,         setJobs]        = useState(()=>{ try{return JSON.parse(localStorage.getItem("mhq_jobs")||"[]")}catch{return[]} });
+  const [showSettings, setShowSettings]= useState(false);
+  const [activeTab,    setActiveTab]   = useState("resume");
+  const [activeTool,   setActiveTool]  = useState("Job Outreach");
+  const [filter,       setFilter]      = useState("all");
+  const [toasts,       setToasts]      = useState([]);
+
+  /* resume editing */
+  const [draftResume,   setDraftResume]  = useState(resume);
+  const [resumeEditing, setResumeEditing]= useState(false);
+  const [resumeSynced,  setResumeSynced] = useState(true);
+  const [aiSuggestion,  setAiSuggestion] = useState("");
+  const [aiLoading,     setAiLoading]    = useState(false);
+
+  /* shared job target */
+  const [jt, setJt] = useState({
+    company:COMPANIES[0], customCo:"", role:"", jobUrl:"",
+    jobDesc:"", source:"Indeed", recipientType:"Recruiter", zoomLink:"",
+  });
+
+  /* cover letter */
+  const [clOut,  setClOut]  = useState("");
+  const [clBusy, setClBusy] = useState(false);
+  const [clStale,setClStale]= useState(false);
+  const autoRef = useRef(null);
+
+  /* hunt tools */
+  const [hOut,  setHOut]  = useState("");
+  const [hBusy, setHBusy] = useState(false);
+  const [selQ,  setSelQ]  = useState(INTERVIEW_QS[0]);
+  const [offer, setOffer] = useState({base:"",perApp:"",leads:"",aeOnly:false,benefits:true,equipment:true});
+
+  /* Gemini */
+  const [fitData,   setFitData]   = useState(null);
+  const [fitBusy,   setFitBusy]   = useState(false);
+  const [pitchUrl,  setPitchUrl]  = useState(null);
+  const [pitchBusy, setPitchBusy] = useState(false);
+
+  /* FIX: Use a ref so the useEffect cleanup always has the latest pitchUrl */
+  const pitchUrlRef = useRef(null);
+  const setPitch = url => { pitchUrlRef.current = url; setPitchUrl(url); };
+
+  const huntRef = useRef(null);
+
+  /* Cleanup on unmount — ref guarantees latest value */
+  useEffect(()=>{
+    return ()=>{
+      clearTimeout(autoRef.current);
+      if (pitchUrlRef.current) URL.revokeObjectURL(pitchUrlRef.current);
+    };
+  }, []);
+
+  useEffect(()=>{ if(hOut&&huntRef.current) huntRef.current.scrollTop=0; },[hOut]);
+
+  /* ── Toast helpers ── */
+  const toast = useCallback((msg, type="info")=>{
+    const id = Date.now() + Math.random();
+    setToasts(p=>[...p,{id,msg,type}]);
+    setTimeout(()=>setToasts(p=>p.filter(t=>t.id!==id)), 4500);
+  },[]);
+  const dismissToast = id => setToasts(p=>p.filter(t=>t.id!==id));
+
+  /* ── Derived values ── */
+  const isCustom  = jt.company.name==="Other / Custom";
+  const coName    = isCustom ? (jt.customCo||"the company") : jt.company.name;
+  const coFocus   = isCustom ? "MAPD/DSNP"     : jt.company.focus;
+  const coNotes   = isCustom ? (jt.jobDesc||"custom role") : jt.company.notes;
+  const coType    = isCustom ? "Medicare"       : jt.company.type;
+  const clWords   = clOut ? clOut.trim().split(/\s+/).filter(Boolean).length : 0;
+  /* FIX: color the word count based on 215-word target */
+  const clWordColor = clWords===0?"#2a3a50":clWords<=215?"#64d2a4":"#e07050";
+
+  /* ── Persist ── */
+  const saveKeys = (ant, gem) => {
+    const a=ant.trim(), g=gem.trim();
+    localStorage.setItem("mhq_apikey",a); localStorage.setItem("mhq_gemini",g);
+    setApiKey(a); setGeminiKey(g); setShowSettings(false);
+    toast("Settings saved","success");
+  };
+  const saveResume = () => {
+    localStorage.setItem("mhq_resume",draftResume);
+    setResume(draftResume); setResumeSynced(true);
+    setResumeEditing(false); setAiSuggestion("");
+    toast("Resume saved and synced to all AI tools","success");
+  };
+  const discardResume = () => {
+    setDraftResume(resume); setResumeSynced(true);
+    setResumeEditing(false); setAiSuggestion("");
+  };
+  const saveJobs = jobs => {
+    setJobs(jobs);
+    localStorage.setItem("mhq_jobs",JSON.stringify(jobs));
+  };
+
+  /* ── System prompt ── */
+  const sys = r => `You are an expert Medicare sales career coach. Know CMS regulations, AEP/OEP, MAPD/DSNP/Supplement products, and what Medicare hiring managers look for.
+
+CANDIDATE RESUME:
+${r}
+
+Lead with his #1 metric: 29.84% MAPD conversion rate (industry 15–20% — he beats it by 48%+). Proof points from resume ONLY. Sharp, metric-forward.`;
+
+  /* ── Cover Letter ── */
+  const genCL = useCallback(async (r, target) => {
+    if (!apiKey) { setShowSettings(true); return; }
+    const cn    = target.company.name==="Other / Custom"?(target.customCo||"the company"):target.company.name;
+    const cf    = target.company.name==="Other / Custom"?"MAPD/DSNP":target.company.focus;
+    const cnts  = target.company.name==="Other / Custom"?target.jobDesc:target.company.notes;
+    const ctype = target.company.name==="Other / Custom"?"Medicare":target.company.type;
+    const desc  = target.jobDesc?`\n\nJOB POSTING EXCERPT:\n${target.jobDesc.slice(0,600)}`:"";
+    setClBusy(true); setClOut(""); setClStale(false);
+    try {
+      const result = await callClaude(
+        `Write a punchy 3-paragraph cover letter (under 215 words) for ${PROFILE.name} applying to ${cn} for: "${target.role||"Remote Medicare Sales Agent"}".
+
+Company: ${ctype} focused on ${cf}. Notes: ${cnts}.${desc}
+Found via: ${target.source}${target.jobUrl?` | URL: ${target.jobUrl}`:""}
+
+STRUCTURE — draw ONLY from the resume:
+Para 1: Bold opening with 29.84% conversion rate + years AEP/OEP + 36-state licensing. Do NOT start with "Dear Hiring Manager."
+Para 2: 2–3 proof points from the resume most relevant to ${cn}'s focus on ${cf}
+Para 3: One specific reason ${cn} appeals + CTA with ${PROFILE.phone} and ${PROFILE.email}
+
+Every sentence earns its place. Under 215 words.`,
+        sys(r), apiKey);
+      setClOut(result);
+    } finally {
+      setClBusy(false);
+    }
+  }, [apiKey]);
+
+  /* ── Job target updater with auto-regen ── */
+  const setJtField = patch => {
+    setJt(prev => {
+      const next = {...prev,...patch};
+      if (clOut && !clBusy) {
+        setClStale(true);
+        clearTimeout(autoRef.current);
+        autoRef.current = setTimeout(()=>genCL(resume, next), 2400);
+      }
+      return next;
+    });
+  };
+
+  /* ── Export cover letter ── */
+  const exportCL = () => {
+    const url = URL.createObjectURL(new Blob([clOut],{type:"text/plain"}));
+    const a = Object.assign(document.createElement("a"),{
+      href:url, download:`cover-letter-${coName.replace(/[\s/]+/g,"-").toLowerCase()}.txt`
+    });
+    a.click(); setTimeout(()=>URL.revokeObjectURL(url),1000);
+    toast("Cover letter downloaded","success");
+  };
+
+  /* ── Switch hunt tool — clears stale audio ── */
+  const switchTool = tool => {
+    setActiveTool(tool); setHOut("");
+    if (pitchUrlRef.current) { URL.revokeObjectURL(pitchUrlRef.current); setPitch(null); }
+  };
+
+  /* ── Clear intake — also cancels any pending auto-regen ── */
+  /* FIX: cancel timer on clear so cover letter doesn't regenerate after clearing */
+  const clearIntake = () => {
+    clearTimeout(autoRef.current);
+    setJt({company:COMPANIES[0],customCo:"",role:"",jobUrl:"",jobDesc:"",source:"Indeed",recipientType:"Recruiter",zoomLink:""});
+    setClOut(""); setClStale(false); setFitData(null);
+    toast("Intake cleared","info");
+  };
+
+  /* ── Log application to tracker ── */
+  const logApplication = () => {
+    const entry = {
+      id: Date.now(),
+      company: coName, role: jt.role||"Remote Medicare Sales Agent",
+      source: jt.source, jobUrl: jt.jobUrl,
+      date: new Date().toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"}),
+      status: "Applied", notes:"",
+    };
+    saveJobs([entry,...jobs]);
+    toast(`Logged application to ${coName}`,"success");
+  };
+
+  /* ── Hunt generators ── */
+  const runH = async (prompt, sysP) => {
+    if (!apiKey) { setShowSettings(true); return; }
+    setHBusy(true); setHOut("");
+    const r = await callClaude(prompt, sysP, apiKey);
+    setHOut(r); setHBusy(false);
+  };
+
+  const genOutreach = ()=>runH(
+    `Write three outreach messages for ${PROFILE.name} applying to ${coName}.
+
+Source=${jt.source} | Role=${jt.role||"Remote Medicare Sales Agent"} | Recipient=${jt.recipientType}
+Job URL=${jt.jobUrl||"not provided"} | Zoom=${jt.zoomLink||"not yet scheduled"}
+${jt.jobDesc?`Job description:\n${jt.jobDesc.slice(0,400)}`:""}
+
+1. INITIAL APPLICATION (via ${jt.source}) — max 90 words. Lead with conversion rate. Reference job URL if provided.
+2. FOLLOW-UP (3–5 days later) — max 70 words. Polite persistence.
+3. INTERVIEW CONFIRMATION — max 80 words. Embed Zoom link (${jt.zoomLink||"[INSERT ZOOM LINK]"}) clearly.
+
+Company context: ${coNotes}. Resume proof points. Human, not templated.`, sys(resume));
+
+  const genInterview = ()=>runH(
+    `Coach ${PROFILE.name} on: "${selQ}"
+
+STRONG ANSWER: 3–5 sentences verbatim, grounded in real resume details
+WHY IT WORKS: 2 sentences on the strategy
+WATCH OUT: One specific thing to avoid
+
+Use his actual employers, dates, and numbers. Not generic.`, sys(resume));
+
+  const genOffer = ()=>runH(
+    `Evaluate this W2 Medicare offer for ${PROFILE.name}:
+Base $${offer.base||"?"}/yr | Per-enrollment $${offer.perApp||"?"} | Leads: ${offer.leads||"?"} | ${offer.aeOnly?"AEP-only":"Year-round"} | Benefits: ${offer.benefits?"Yes":"No"} | Equipment: ${offer.equipment?"Yes":"No"}
+
+1. VERDICT: Strong/Acceptable/Weak/Pass + one sentence
+2. COMP MATH: Annual at 25 enrollments/month
+3. RED FLAGS: Direct
+4. NEGOTIATION: 2 asks
+5. BOTTOM LINE: Take it or not?
+
+He has a 29.84% rate. He has leverage.`, sys(resume));
+
+  const genPitch = async ()=>{
+    if (!geminiKey) { toast("Add a Gemini API key in ⚙ Settings to use Audio Pitch.","error"); return; }
+    setPitchBusy(true); setHOut(""); setPitch(null);
+    try {
+      const script = await callGeminiText(
+        `Write a confident 30-second spoken elevator pitch for ${PROFILE.name} applying to ${coName} for the ${jt.role||"Remote Medicare Sales"} role. Lead with his 29.84% conversion rate and 36-state licensing. Natural, enthusiastic, under 90 words. Just the spoken script — no stage directions or brackets.`,
+        "You are a professional sales coach. Respond ONLY with the spoken text.",
+        false, geminiKey);
+      setHOut(script);
+      try {
+        const url = await callGeminiTTS(script, geminiKey);
+        setPitch(url);
+      } catch(ttsErr) {
+        toast(`TTS unavailable: ${ttsErr.message.slice(0,80)}. Script is shown — read it aloud!`,"error");
+      }
+    } catch(e) { setHOut(`❌ Gemini error: ${e.message}`); }
+    setPitchBusy(false);
+  };
+
+  const analyzeFit = async ()=>{
+    if (!jt.jobDesc) { toast("Paste a job description first.","error"); return; }
+    if (!geminiKey)  { toast("Add a Gemini API key in ⚙ Settings for Fit Check.","error"); return; }
+    setFitBusy(true); setFitData(null);
+    try {
+      const text = await callGeminiText(
+        `Resume:\n${resume}\n\nJob Description:\n${jt.jobDesc}\n\nScore the match 0–100 and identify missing keywords.`,
+        "You are an ATS matching algorithm. Return valid JSON only with keys: score (integer), summary (string), missingKeywords (array of strings).",
+        true, geminiKey);
+      setFitData(JSON.parse(text));
+    } catch(e) {
+      toast(`Fit check failed: ${e.message.slice(0,80)}`,"error");
+      setFitData({score:0,summary:"Analysis failed — check your Gemini key.",missingKeywords:[]});
+    }
+    setFitBusy(false);
+  };
+
+  /* FIX: AI Improve uses current saved resume, not stale draftResume */
+  const suggestResume = async ()=>{
+    if (!apiKey) { setShowSettings(true); return; }
+    setAiLoading(true); setAiSuggestion("");
+    const r = await callClaude(
+      `Review this Medicare sales resume. Give ONE high-impact improvement.\n\nFINDING: What's weak (1 sentence)\nSUGGESTED REVISION: before → after\nWHY IT MATTERS: one sentence`,
+      sys(resume), apiKey);
+    setAiSuggestion(r); setAiLoading(false);
+  };
+
+  const searchJobs = ()=>{
+    window.open(`https://www.google.com/search?q=${encodeURIComponent(coName+" remote Medicare sales agent")}&ibp=htl;jobs`,"_blank","noopener");
+    toast(`Opened Google Jobs for ${coName}`,"success");
+  };
+
+  /* ── Job tracker helpers ── */
+  const cycleStatus = id =>{
+    saveJobs(jobs.map(j=>{
+      if(j.id!==id) return j;
+      const next = JOB_STATUSES[(JOB_STATUSES.indexOf(j.status)+1)%JOB_STATUSES.length];
+      return {...j,status:next};
+    }));
+  };
+  const updateNote = (id,notes)=>saveJobs(jobs.map(j=>j.id===id?{...j,notes}:j));
+  const deleteJob = id =>saveJobs(jobs.filter(j=>j.id!==id));
+
+  const filteredCos=(filter==="all"?COMPANIES:COMPANIES.filter(c=>c.tier===parseInt(filter))).filter(c=>c.name!=="Other / Custom");
+  const isBusy=hBusy||pitchBusy;
+  const TABS=[["resume","My Resume"],["hunt","Job Hunt Tools"],["tracker",`Tracker${jobs.length?` (${jobs.length})`:""}`],["profile","My Profile"],["companies","Target Companies"]];
+  const TC={1:"#f0b429",2:"#64d2a4"};
+
+  /* ── Shared CSS ── */
+  const css=`
+    .t{background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;padding:8px 14px;font-family:'IBM Plex Mono',monospace;font-size:11px;color:#4a5a70;transition:all .15s;letter-spacing:.3px;white-space:nowrap}
+    .t.on{color:#f0b429;border-bottom-color:#f0b429}.t:hover:not(.on){color:#b0c0d0}
+    .tb{background:#0d1017;border:1px solid #181e2c;border-radius:4px;cursor:pointer;padding:8px 12px;font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:#6a7a90;transition:all .14s;text-align:left;width:100%}
+    .tb.on{background:#141928;border-color:#f0b429;color:#f0b429}.tb:hover:not(.on){border-color:#2a3a50;color:#b0c0d0}
+    .cb{border-radius:4px;border:1px solid #161e2c;background:#0a0d14;cursor:pointer;padding:8px 9px;text-align:left;transition:all .12s;width:100%}
+    .cb:hover{border-color:#2a3a50}.cb.on{background:#131928;border-color:#f0b429}
+    .yb{background:#f0b429;border:none;color:#080a0c;font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:11px;padding:8px 16px;border-radius:4px;cursor:pointer;letter-spacing:.4px;transition:background .15s;white-space:nowrap}
+    .yb:hover{background:#ffc840}.yb:disabled{background:#1e2a3a;color:#3a4a60;cursor:not-allowed}
+    .gb{background:none;border:1px solid #1e2a3a;color:#5a7a9a;font-family:'IBM Plex Mono',monospace;font-size:10.5px;padding:6px 13px;border-radius:4px;cursor:pointer;transition:all .15s;white-space:nowrap}
+    .gb:hover{border-color:#3a5a7a;color:#c0d8f0}.gb:disabled{opacity:.4;cursor:not-allowed}
+    .rb{background:none;border:1px solid #3a1a1a;color:#9a5050;font-family:'IBM Plex Mono',monospace;font-size:10.5px;padding:5px 10px;border-radius:4px;cursor:pointer;transition:all .15s}
+    .rb:hover{border-color:#9a5050;color:#c07070}
+    .ob{background:#080b10;border:1px solid #161e2c;border-radius:5px;padding:15px;min-height:110px;max-height:380px;overflow-y:auto;line-height:1.75;color:#a8bcd0;font-family:'IBM Plex Sans',sans-serif;font-size:12.5px;white-space:pre-wrap}
+    .fi{background:#0d1118;border:1px solid #1a2230;border-radius:4px;padding:6px 10px;color:#b8cce0;font-family:'IBM Plex Mono',monospace;font-size:11.5px;width:100%;outline:none;transition:border .15s}
+    .fi:focus{border-color:#2a4060}select.fi{appearance:none;cursor:pointer}
+    .ta{background:#06080d;border:1px solid #161e2c;border-radius:5px;padding:12px 14px;color:#9abccf;font-family:'IBM Plex Mono',monospace;font-size:11px;line-height:1.8;width:100%;resize:none;outline:none}
+    .ta:focus{border-color:#1e3048}
+    .sc{background:#0d1118;border:1px solid #161e2c;border-radius:6px;padding:13px 16px}
+    .bx{display:inline-block;padding:2px 7px;border-radius:3px;font-size:10px;font-weight:600;letter-spacing:.3px}
+    .pl{animation:pl 1.4s ease-in-out infinite}@keyframes pl{0%,100%{opacity:1}50%{opacity:.3}}
+    .lbl{color:#2a3a50;font-size:9px;letter-spacing:1.8px;text-transform:uppercase;margin-bottom:5px}
+    .ph{padding:10px 15px;border-bottom:1px solid #141c28;display:flex;align-items:center;gap:8px;min-height:41px;flex-shrink:0;background:#08090e}
+    button:focus-visible{outline:2px solid #f0b429;outline-offset:2px}
+    input:focus-visible,textarea:focus-visible,select:focus-visible{outline:2px solid #2a5070;outline-offset:0}
+  `;
+
+  return (
+    <div style={{fontFamily:"'IBM Plex Mono','Courier New',monospace",background:"#0a0c0f",minHeight:"100vh",color:"#c8d6e5",fontSize:13}}>
+    <style>{css}</style>
+    <Toasts toasts={toasts} onDismiss={dismissToast}/>
+
+    {(!apiKey||showSettings)&&<SettingsModal apiKey={apiKey} geminiKey={geminiKey} onSave={saveKeys} onClose={()=>setShowSettings(false)}/>}
+
+    {/* ── NAV ── */}
+    <div id="mhq-nav" style={{background:"#07080d",borderBottom:"1px solid #141c28",padding:"0 18px",display:"flex",alignItems:"center",height:44,gap:0}}>
+      <div style={{color:"#f0b429",fontSize:10.5,fontWeight:700,letterSpacing:2.5,textTransform:"uppercase",marginRight:20,whiteSpace:"nowrap"}}>⬡ Medicare HQ</div>
+      {TABS.map(([id,lbl])=>(
+        <button key={id} className={`t ${activeTab===id?"on":""}`} onClick={()=>setActiveTab(id)}>
+          {lbl}{id==="resume"&&!resumeSynced&&<span style={{display:"inline-block",width:5,height:5,borderRadius:"50%",background:"#e06040",marginLeft:5,verticalAlign:"middle"}} aria-label="unsaved changes"/>}
+        </button>
+      ))}
+      <div style={{marginLeft:"auto",display:"flex",alignItems:"center",gap:10}}>
+        {/* FIX: always show active target — GoHealth is a real target too */}
+        <div style={{fontSize:9.5,color:"#2a5a38",whiteSpace:"nowrap",maxWidth:150,overflow:"hidden",textOverflow:"ellipsis"}}>🎯 {coName}</div>
+        <button onClick={()=>setShowSettings(true)} aria-label="Open settings" style={{background:"none",border:"1px solid #1a2a3a",color:"#3a5a70",fontFamily:"'IBM Plex Mono',monospace",fontSize:10,padding:"4px 10px",borderRadius:4,cursor:"pointer",whiteSpace:"nowrap"}}>⚙ Settings</button>
+      </div>
+    </div>
+
+    {/* ════════════════════════════════════════
+        MY RESUME — 3-column layout
+    ════════════════════════════════════════ */}
+    {activeTab==="resume"&&(
+      <div style={{display:"grid",gridTemplateColumns:"1fr 275px 1fr",height:"calc(100vh - 44px)",overflow:"hidden"}}>
+
+        {/* Col 1 — Resume editor/preview */}
+        <div style={{borderRight:"1px solid #141c28",display:"flex",flexDirection:"column",overflow:"hidden"}}>
+          <div className="ph">
+            <span style={{fontFamily:"'IBM Plex Sans',sans-serif",fontWeight:700,color:"#c8dff0",fontSize:12}}>{resumeEditing?"✏ Editing":"My Resume"}</span>
+            {resumeEditing
+              ?<div style={{marginLeft:"auto",display:"flex",gap:6}}>
+                  <button className="rb" onClick={discardResume}>Discard</button>
+                  <button className="yb" style={{padding:"5px 11px",fontSize:10}} onClick={saveResume}>Save & Sync All</button>
+                </div>
+              :<div style={{marginLeft:"auto",display:"flex",gap:6}}>
+                  <button className="gb" style={{fontSize:10,padding:"4px 10px"}} onClick={()=>{setResumeEditing(true);setDraftResume(resume);setResumeSynced(false);}}>✏ Edit</button>
+                  <button className="yb" style={{padding:"4px 11px",fontSize:10}} disabled={aiLoading} onClick={suggestResume}>{aiLoading?"Analyzing…":"✦ AI Improve"}</button>
+                </div>
+            }
+          </div>
+          {resumeEditing
+            ?<div style={{flex:1,display:"flex",flexDirection:"column",padding:"11px 13px",gap:7,overflow:"hidden"}}>
+                <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+                  <div className="lbl" style={{margin:0}}>plain text · syncs to all tools on save</div>
+                  <div style={{fontSize:9,color:"#2a4050"}}>{draftResume.trim().split(/\s+/).filter(Boolean).length} words</div>
+                </div>
+                <textarea className="ta" style={{flex:1}} value={draftResume} onChange={e=>{setDraftResume(e.target.value);setResumeSynced(false);}} spellCheck={false} aria-label="Resume editor"/>
+              </div>
+            :<div style={{flex:1,padding:"14px 16px",overflowY:"auto"}}>
+                <ResumePreview text={resume}/>
+                {aiSuggestion&&(
+                  <div style={{marginTop:12,background:"#06080d",border:"1px solid #1a3048",borderRadius:5,padding:"11px 13px"}}>
+                    <div style={{fontSize:9,color:"#3a7a9a",letterSpacing:2,textTransform:"uppercase",marginBottom:7}}>✦ AI Suggestion</div>
+                    <div style={{fontFamily:"'IBM Plex Sans',sans-serif",fontSize:11.5,lineHeight:1.75,color:"#7aaabe",whiteSpace:"pre-wrap"}}>{aiSuggestion}</div>
+                  </div>
+                )}
+              </div>
+          }
+        </div>
+
+        {/* Col 2 — Job Intake */}
+        <div id="mhq-intake" style={{borderRight:"1px solid #141c28",display:"flex",flexDirection:"column",background:"#070910",overflow:"hidden"}}>
+          <div className="ph" style={{background:"#070910"}}>
+            <span style={{fontFamily:"'IBM Plex Sans',sans-serif",fontWeight:700,color:"#c8dff0",fontSize:12}}>Job Intake</span>
+            <div style={{marginLeft:"auto",display:"flex",gap:6,alignItems:"center"}}>
+              <span style={{fontSize:8.5,color:"#2a5a38"}}>→ cover letter + outreach</span>
+              <button className="gb" style={{fontSize:9,padding:"3px 8px"}} onClick={clearIntake} aria-label="Clear all intake fields">✕ Clear</button>
+            </div>
+          </div>
+          <div style={{flex:1,overflowY:"auto",padding:"12px",display:"flex",flexDirection:"column",gap:11}}>
+
+            <div>
+              <div className="lbl">Target Company</div>
+              <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:4}}>
+                {COMPANIES.map(c=>(
+                  <button key={c.name} className={`cb ${jt.company.name===c.name?"on":""}`} onClick={()=>setJtField({company:c})} aria-pressed={jt.company.name===c.name}>
+                    <div style={{fontFamily:"'IBM Plex Sans',sans-serif",fontWeight:700,color:jt.company.name===c.name?"#f0b429":"#8aaccf",fontSize:10,lineHeight:1.2}}>{c.name}</div>
+                    <div style={{color:"#2a3a50",fontSize:8.5}}>{c.type}</div>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {isCustom&&(
+              <div>
+                <div className="lbl">Company Name</div>
+                <input className="fi" placeholder="e.g. Bright Health" value={jt.customCo} onChange={e=>setJtField({customCo:e.target.value})} aria-label="Custom company name"/>
+              </div>
+            )}
+
+            <button className="gb" style={{width:"100%",padding:"8px",color:"#a0c8e0",borderColor:"#1e3a50",fontSize:11}} onClick={searchJobs} aria-label={`Search Google Jobs for ${coName}`}>
+              🔍 Search Google Jobs — {coName.split("/")[0].trim()}
+            </button>
+
+            <div>
+              <div className="lbl">Role / Job Title</div>
+              <input className="fi" placeholder="Remote Medicare Sales Agent" value={jt.role} onChange={e=>setJtField({role:e.target.value})} aria-label="Job title"/>
+            </div>
+
+            <div>
+              <div className="lbl">Job Posting URL</div>
+              <input className="fi" placeholder="https://indeed.com/viewjob?jk=..." value={jt.jobUrl} onChange={e=>setJtField({jobUrl:e.target.value})} aria-label="Job posting URL"/>
+            </div>
+
+            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
+              <div>
+                <div className="lbl">Job Source</div>
+                <select className="fi" value={jt.source} onChange={e=>setJtField({source:e.target.value})} aria-label="Job source">
+                  {JOB_SOURCES.map(s=><option key={s}>{s}</option>)}
+                </select>
+              </div>
+              <div>
+                <div className="lbl">Outreach To</div>
+                <select className="fi" value={jt.recipientType} onChange={e=>setJtField({recipientType:e.target.value})} aria-label="Outreach recipient type">
+                  {["Recruiter","Hiring Manager","HR Department","General Inbox"].map(s=><option key={s}>{s}</option>)}
+                </select>
+              </div>
+            </div>
+
+            <div>
+              <div className="lbl">Zoom Link <span style={{color:"#1a2a3a"}}>(optional)</span></div>
+              <input className="fi" placeholder="https://zoom.us/j/..." value={jt.zoomLink} onChange={e=>setJtField({zoomLink:e.target.value})} aria-label="Zoom link"/>
+            </div>
+
+            <div>
+              <div className="lbl">Job Description <span style={{color:"#1a2a3a"}}>(optional — improves all AI outputs)</span></div>
+              <textarea className="ta" style={{height:76,fontSize:10,lineHeight:1.6}} placeholder="Paste key requirements to improve tailoring and fit scoring..." value={jt.jobDesc} onChange={e=>setJtField({jobDesc:e.target.value})} aria-label="Job description"/>
+              {jt.jobDesc&&(
+                <div style={{marginTop:6,background:"#09110e",border:"1px solid #1a3028",borderRadius:4,padding:"8px 10px"}}>
+                  <button className="gb" style={{width:"100%",padding:"6px",fontSize:10,color:"#64d2a4",borderColor:"#1a5a3a"}} onClick={analyzeFit} disabled={fitBusy} aria-label="Analyze resume fit against job description">
+                    {fitBusy?"Analyzing…":"✨ Resume Fit Check (Gemini)"}
+                  </button>
+                  {fitData&&(
+                    <div style={{marginTop:8,fontSize:10}}>
+                      <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:4}}>
+                        <div style={{color:fitData.score>75?"#64d2a4":fitData.score>50?"#f0b429":"#e06040",fontSize:18,fontWeight:700,minWidth:36}}>{fitData.score}%</div>
+                        <div style={{color:"#8aaab8",lineHeight:1.45,fontFamily:"'IBM Plex Sans',sans-serif"}}>{fitData.summary}</div>
+                      </div>
+                      {fitData.missingKeywords?.length>0&&(
+                        <div style={{color:"#7a9ab0",fontSize:9,marginTop:4}}>
+                          <span style={{color:"#d06040",fontWeight:700}}>Add to resume: </span>
+                          {fitData.missingKeywords.join(" · ")}
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+
+            <button className="yb" style={{width:"100%",padding:"9px",fontSize:11}} disabled={clBusy} onClick={()=>genCL(resume,jt)}>
+              {clBusy?"Generating…":"📄 Generate Cover Letter →"}
+            </button>
+
+            <button className="gb" style={{width:"100%",padding:"7px",fontSize:10,color:"#64a878",borderColor:"#1a3a28"}} onClick={logApplication} aria-label="Log this application to the tracker">
+              📋 Log Application to Tracker
+            </button>
+          </div>
+        </div>
+
+        {/* Col 3 — Cover Letter output */}
+        <div id="mhq-cl" style={{display:"flex",flexDirection:"column",overflow:"hidden"}}>
+          <div className="ph">
+            <span style={{fontFamily:"'IBM Plex Sans',sans-serif",fontWeight:700,color:"#c8dff0",fontSize:12}}>Cover Letter</span>
+            {clOut&&!clBusy&&(
+              <div style={{marginLeft:"auto",display:"flex",gap:6,alignItems:"center"}}>
+                {clStale&&<span style={{fontSize:9,color:"#b08040"}}>⟳ updating…</span>}
+                {/* FIX: word count colored by 215-word threshold */}
+                <span style={{fontSize:9,color:clWordColor,fontWeight:clWords>215?700:400}}>{clWords}w{clWords>215?" ⚠":""}</span>
+                <button className="gb" style={{fontSize:10,padding:"4px 9px"}} onClick={()=>genCL(resume,jt)} aria-label="Regenerate cover letter">↺ Regen</button>
+                <button className="gb" style={{fontSize:10,padding:"4px 9px"}} onClick={()=>{navigator.clipboard?.writeText(clOut);toast("Copied","success");}} aria-label="Copy cover letter to clipboard">Copy</button>
+                <button className="gb" style={{fontSize:10,padding:"4px 9px"}} onClick={exportCL} aria-label="Download cover letter as text file">↓ .txt</button>
+                <button className="gb" style={{fontSize:10,padding:"4px 9px"}} onClick={()=>window.print()} aria-label="Print cover letter">🖨</button>
+              </div>
+            )}
+          </div>
+          <div style={{flex:1,padding:"14px 16px",overflowY:"auto"}}>
+            {!clOut&&!clBusy&&(
+              <div style={{display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",height:"100%",gap:12,textAlign:"center",opacity:.5}}>
+                <div style={{fontSize:34}}>📄</div>
+                <div style={{color:"#2a3a50",fontSize:11,lineHeight:1.8,maxWidth:230}}>
+                  Fill in Job Intake and click<br/>
+                  <span style={{color:"#f0b429"}}>Generate Cover Letter →</span><br/><br/>
+                  <span style={{fontSize:10}}>Auto-updates when you change company, role, or job description.</span>
+                </div>
+              </div>
+            )}
+            {clBusy&&<div style={{paddingTop:20}}><span className="pl" style={{color:"#f0b429",fontSize:12}}>■ Writing cover letter…</span></div>}
+            {clOut&&!clBusy&&(
+              <div>
+                {clStale&&<div style={{background:"#140f04",border:"1px solid #3a2810",borderRadius:4,padding:"7px 11px",fontSize:10,color:"#b08040",marginBottom:12}}>
+                  ⟳ Job details changed — auto-regenerating in a moment…
+                </div>}
+                <div className="cl-text" style={{fontFamily:"'IBM Plex Sans',sans-serif",fontSize:13,lineHeight:1.9,color:"#b8cce0",whiteSpace:"pre-wrap"}}>{clOut}</div>
+                <div style={{marginTop:14,paddingTop:11,borderTop:"1px solid #141c28",display:"flex",gap:8,alignItems:"center",flexWrap:"wrap"}}>
+                  <span style={{fontSize:8.5,color:"#2a3a50",letterSpacing:1.5}}>FOR</span>
+                  <span style={{fontSize:10.5,color:"#f0b429"}}>{coName}</span>
+                  {jt.role&&<span style={{fontSize:10,color:"#3a5a70"}}>· {jt.role}</span>}
+                  {jt.jobUrl&&<a href={jt.jobUrl} target="_blank" rel="noopener" style={{marginLeft:"auto",fontSize:10,color:"#3a7aaa",textDecoration:"none"}}>View Posting ↗</a>}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    )}
+
+    {/* ════════════════════════════════════════
+        JOB HUNT TOOLS
+    ════════════════════════════════════════ */}
+    {activeTab==="hunt"&&(
+      <div style={{display:"grid",gridTemplateColumns:"185px 1fr",height:"calc(100vh - 44px)"}}>
+        <div id="mhq-sidebar" style={{borderRight:"1px solid #141c28",padding:"14px 0",display:"flex",flexDirection:"column",gap:3,overflowY:"auto"}}>
+          <div style={{padding:"0 12px 7px",color:"#2a3a50",fontSize:9,letterSpacing:2,textTransform:"uppercase"}}>Tools</div>
+          {HUNT_TOOLS.map(t=>(
+            <button key={t} className={`tb ${activeTool===t?"on":""}`} onClick={()=>switchTool(t)}>
+              {t==="Job Outreach"?"🔗 ":t==="Interview Prep"?"🎯 ":t==="Offer Evaluator"?"💰 ":""}{t}
+            </button>
+          ))}
+          <div style={{margin:"14px 0 6px",padding:"0 12px 6px",color:"#2a3a50",fontSize:9,letterSpacing:2,textTransform:"uppercase"}}>Active Target</div>
+          <div style={{padding:"0 12px",display:"flex",flexDirection:"column",gap:6}}>
+            <div style={{color:"#f0b429",fontSize:11,fontWeight:700,fontFamily:"'IBM Plex Sans',sans-serif"}}>{coName}</div>
+            {jt.role&&<div style={{color:"#3a5a70",fontSize:10,lineHeight:1.3}}>{jt.role}</div>}
+            <button className="gb" style={{fontSize:9,padding:"4px 8px",marginTop:2,width:"100%"}} onClick={()=>setActiveTab("resume")}>✏ Edit Job Target →</button>
+          </div>
+          <div style={{margin:"14px 0 6px",padding:"0 12px 6px",color:"#2a3a50",fontSize:9,letterSpacing:2,textTransform:"uppercase"}}>Your Edge</div>
+          <div style={{padding:"0 12px",display:"flex",flexDirection:"column",gap:6}}>
+            {[["Conversion","29.84%"],["vs Benchmark","+48%"],["States","36 active"],["AEP/OEP","6+ yrs"]].map(([l,v])=>(
+              <div key={l} style={{display:"flex",justifyContent:"space-between"}}>
+                <span style={{color:"#3a4a60",fontSize:10}}>{l}</span>
+                <span style={{color:"#f0b429",fontSize:10,fontWeight:700}}>{v}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div style={{padding:"20px 24px",overflowY:"auto"}}>
+          <div style={{marginBottom:16}}>
+            <h2 style={{fontFamily:"'IBM Plex Sans',sans-serif",fontSize:16,color:"#ddeeff",fontWeight:700,marginBottom:3}}>{activeTool}</h2>
+            <p style={{color:"#2a3a50",fontSize:11}}>
+              {activeTool==="Job Outreach"   ?"3 messages: initial application · follow-up · interview confirmation"
+              :activeTool==="Interview Prep" ?"Scripted answers grounded in your real resume metrics"
+              :activeTool==="Offer Evaluator"?"Plug in offer details · get a straight verdict"
+              :                               "AI-written 30-second elevator pitch + Gemini TTS audio to practice alongside"}
+            </p>
+          </div>
+
+          {activeTool==="Job Outreach"&&(
+            <div style={{marginBottom:14,background:"#0a0d14",border:"1px solid #141c28",borderRadius:5,padding:"11px 13px"}}>
+              <div style={{fontSize:8.5,color:"#3a5a40",letterSpacing:1.5,marginBottom:9}}>PULLING FROM JOB INTAKE · edit in My Resume tab</div>
+              <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:9,fontSize:11}}>
+                {[["Company",coName],["Source",jt.source],["Role",jt.role||"Remote Medicare Sales Agent"],["Outreach To",jt.recipientType]].map(([l,v])=>(
+                  <div key={l}>
+                    <div className="lbl" style={{marginBottom:2}}>{l}</div>
+                    <div style={{color:"#7aaad0",fontFamily:"'IBM Plex Sans',sans-serif"}}>{v}</div>
+                  </div>
+                ))}
+                {jt.jobUrl&&<div style={{gridColumn:"1/-1"}}>
+                  <div className="lbl" style={{marginBottom:2}}>Job URL</div>
+                  <div style={{color:"#3a6a8a",fontSize:10,wordBreak:"break-all"}}>{jt.jobUrl}</div>
+                </div>}
+              </div>
+              <div style={{marginTop:11}}>
+                <div className="lbl">Zoom Link (update here)</div>
+                <input className="fi" placeholder="https://zoom.us/j/..." value={jt.zoomLink} onChange={e=>setJt(p=>({...p,zoomLink:e.target.value}))} aria-label="Zoom meeting link"/>
+              </div>
+            </div>
+          )}
+
+          {activeTool==="Interview Prep"&&(
+            <div style={{marginBottom:14}}>
+              <div className="lbl" style={{marginBottom:7}}>Select Question</div>
+              <div style={{display:"flex",flexDirection:"column",gap:4}}>
+                {INTERVIEW_QS.map(q=>(
+                  <button key={q} onClick={()=>{setSelQ(q);setHOut("");}} aria-pressed={selQ===q}
+                    style={{background:selQ===q?"#101520":"#080b10",border:selQ===q?"1px solid #f0b429":"1px solid #141c28",borderRadius:4,padding:"8px 12px",textAlign:"left",cursor:"pointer",color:selQ===q?"#ddeeff":"#5a6a80",fontSize:12,fontFamily:"'IBM Plex Sans',sans-serif",lineHeight:1.4}}>
+                    <span style={{color:selQ===q?"#f0b429":"#1e2e40",marginRight:7}}>▸</span>{q}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {activeTool==="Offer Evaluator"&&(
+            <div style={{marginBottom:14,display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>
+              {[["Base Salary ($/yr)","base","e.g. 45000"],["Commission / Enrollment ($)","perApp","e.g. 85"],["Lead Source","leads","warm transfers, cold, aged"]].map(([l,k,ph])=>(
+                <div key={k}>
+                  <div className="lbl">{l}</div>
+                  <input className="fi" placeholder={ph} value={offer[k]} onChange={e=>setOffer(f=>({...f,[k]:e.target.value}))} aria-label={l}/>
+                </div>
+              ))}
+              <div>
+                <div className="lbl">Employment Type</div>
+                <select className="fi" value={offer.aeOnly?"aep":"yr"} onChange={e=>setOffer(f=>({...f,aeOnly:e.target.value==="aep"}))} aria-label="Employment type">
+                  <option value="yr">Year-round</option><option value="aep">AEP-only (seasonal)</option>
+                </select>
+              </div>
+              <div style={{display:"flex",gap:16,alignItems:"center",paddingTop:16}}>
+                {[["Benefits","benefits"],["Equipment","equipment"]].map(([l,k])=>(
+                  <label key={k} style={{display:"flex",alignItems:"center",gap:5,cursor:"pointer",color:"#6a7a90",fontSize:11}}>
+                    <input type="checkbox" checked={offer[k]} onChange={e=>setOffer(f=>({...f,[k]:e.target.checked}))} style={{accentColor:"#f0b429"}}/>{l}
+                  </label>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {activeTool==="✨ Audio Pitch"&&(
+            <div style={{marginBottom:14,padding:"12px 14px",background:"#0d0f08",border:"1px solid #2a3018",borderRadius:5}}>
+              <div style={{color:"#c8d88a",fontSize:11,lineHeight:1.65,marginBottom:6}}>
+                Writes a 30-second pitch for <strong style={{color:"#f0b429"}}>{coName}</strong>, then uses Gemini TTS to read it aloud so you can practice before the call.
+              </div>
+              {!geminiKey&&(
+                <div style={{fontSize:10,color:"#8a6030",marginTop:8,padding:"6px 10px",background:"#1a0f04",border:"1px solid #3a2010",borderRadius:4}}>
+                  ⚠ Requires a Gemini API key — add one in ⚙ Settings (free at aistudio.google.com)
+                </div>
+              )}
+            </div>
+          )}
+
+          <button className="yb" disabled={isBusy} onClick={()=>{
+            if(activeTool==="Job Outreach")    genOutreach();
+            if(activeTool==="Interview Prep")  genInterview();
+            if(activeTool==="Offer Evaluator") genOffer();
+            if(activeTool==="✨ Audio Pitch")  genPitch();
+          }} style={{marginBottom:14}} aria-label={`Generate ${activeTool}`}>
+            {isBusy?"GENERATING…":`GENERATE ${activeTool.replace("✨ ","").toUpperCase()}`}
+          </button>
+
+          {(isBusy||hOut)&&(
+            <div>
+              <div className="lbl" style={{marginBottom:6}}>Output</div>
+              <div className="ob" ref={huntRef} role="region" aria-label="Generated output">
+                {isBusy?<span className="pl" style={{color:"#f0b429"}}>■ Generating…</span>:hOut}
+              </div>
+              {pitchUrl&&activeTool==="✨ Audio Pitch"&&(
+                <div style={{marginTop:14,background:"#0d1520",padding:"12px 14px",borderRadius:5,border:"1px solid #1c2a40"}}>
+                  <div style={{fontSize:9,color:"#64d2a4",letterSpacing:2,textTransform:"uppercase",marginBottom:8}}>▶ Listen & Practice</div>
+                  <audio controls src={pitchUrl} style={{width:"100%",height:34}} aria-label="Elevator pitch audio"/>
+                  <div style={{fontSize:10,color:"#2a4050",marginTop:6}}>Gemini TTS · Aoede voice</div>
+                </div>
+              )}
+              {hOut&&<button className="gb" onClick={()=>{navigator.clipboard?.writeText(hOut);toast("Copied","success");}} style={{marginTop:9}} aria-label="Copy output to clipboard">Copy to clipboard</button>}
+            </div>
+          )}
+        </div>
+      </div>
+    )}
+
+    {/* ════════════════════════════════════════
+        JOB TRACKER
+    ════════════════════════════════════════ */}
+    {activeTab==="tracker"&&(
+      <div style={{padding:24,overflowY:"auto",height:"calc(100vh - 44px)"}}>
+        <div style={{display:"flex",alignItems:"center",gap:12,marginBottom:16}}>
+          <div style={{fontFamily:"'IBM Plex Sans',sans-serif",fontSize:14,fontWeight:700,color:"#ddeeff"}}>Application Tracker</div>
+          <div style={{fontSize:10,color:"#2a4050"}}>Click status to cycle · Notes are auto-saved</div>
+          {jobs.length>0&&<button className="rb" style={{marginLeft:"auto",fontSize:9}} onClick={()=>{if(window.confirm("Clear all entries?")) saveJobs([]);}}>Clear All</button>}
+        </div>
+
+        {jobs.length===0?(
+          <div style={{display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",height:"60vh",gap:14,textAlign:"center",opacity:.5}}>
+            <div style={{fontSize:36}}>📋</div>
+            <div style={{color:"#2a3a50",fontSize:12,lineHeight:1.8}}>
+              No applications logged yet.<br/>
+              Fill in Job Intake and click <span style={{color:"#64a878"}}>📋 Log Application to Tracker</span>.
+            </div>
+          </div>
+        ):(
+          <div style={{border:"1px solid #141c28",borderRadius:6,overflow:"hidden"}}>
+            <div style={{display:"grid",gridTemplateColumns:"90px 160px 1fr 110px 90px 1fr 32px",padding:"8px 12px",background:"#0a0d14",color:"#2a3a50",fontSize:8.5,letterSpacing:1.8,textTransform:"uppercase",borderBottom:"1px solid #141c28"}}>
+              <div>Date</div><div>Company</div><div>Role</div><div>Status</div><div>Source</div><div>Notes</div><div/>
+            </div>
+            {jobs.map(j=>{
+              const sc=STATUS_COLORS[j.status]||STATUS_COLORS["Applied"];
+              return (
+                <div key={j.id} style={{display:"grid",gridTemplateColumns:"90px 160px 1fr 110px 90px 1fr 32px",padding:"10px 12px",borderBottom:"1px solid #0e141e",alignItems:"center",gap:4}}>
+                  <div style={{color:"#2a4050",fontSize:10}}>{j.date}</div>
+                  <div style={{fontFamily:"'IBM Plex Sans',sans-serif",fontWeight:700,color:"#b8d0e8",fontSize:12}}>
+                    {j.jobUrl
+                      ?<a href={j.jobUrl} target="_blank" rel="noopener" style={{color:"#b8d0e8",textDecoration:"none"}}>{j.company} ↗</a>
+                      :j.company
+                    }
+                  </div>
+                  <div style={{color:"#5a7a90",fontSize:11,fontFamily:"'IBM Plex Sans',sans-serif",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{j.role}</div>
+                  <button onClick={()=>cycleStatus(j.id)} title="Click to advance status"
+                    style={{background:sc.bg,border:`1px solid ${sc.border}`,color:sc.color,borderRadius:12,padding:"3px 9px",fontSize:10,cursor:"pointer",fontFamily:"'IBM Plex Mono',monospace",whiteSpace:"nowrap",transition:"all .15s"}} aria-label={`Status: ${j.status}. Click to advance.`}>
+                    {j.status}
+                  </button>
+                  <div style={{color:"#3a4a60",fontSize:10}}>{j.source}</div>
+                  <input value={j.notes} onChange={e=>updateNote(j.id,e.target.value)} placeholder="add notes…"
+                    style={{background:"transparent",border:"none",borderBottom:"1px solid #1a2a3a",color:"#6a8aa0",fontFamily:"'IBM Plex Mono',monospace",fontSize:10,outline:"none",width:"100%",padding:"2px 4px"}} aria-label="Application notes"/>
+                  <button onClick={()=>deleteJob(j.id)} style={{background:"none",border:"none",color:"#3a2a2a",cursor:"pointer",fontSize:14,padding:"2px",lineHeight:1,borderRadius:3,transition:"color .15s"}} onMouseOver={e=>e.target.style.color="#c06060"} onMouseOut={e=>e.target.style.color="#3a2a2a"} aria-label="Delete this entry">✕</button>
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        {jobs.length>0&&(
+          <div style={{marginTop:14,display:"flex",gap:12,flexWrap:"wrap"}}>
+            {JOB_STATUSES.map(s=>{
+              const count=jobs.filter(j=>j.status===s).length;
+              if(!count) return null;
+              const sc=STATUS_COLORS[s];
+              return <div key={s} style={{background:sc.bg,border:`1px solid ${sc.border}`,color:sc.color,padding:"4px 12px",borderRadius:12,fontSize:10,fontFamily:"'IBM Plex Mono',monospace"}}>
+                {s} {count}
+              </div>;
+            })}
+            <div style={{fontSize:10,color:"#2a3a50",marginLeft:"auto",alignSelf:"center"}}>{jobs.length} total application{jobs.length!==1?"s":""}</div>
+          </div>
+        )}
+      </div>
+    )}
+
+    {/* ════════════════════════════════════════
+        MY PROFILE
+    ════════════════════════════════════════ */}
+    {activeTab==="profile"&&(
+      <div style={{padding:26,maxWidth:780,overflowY:"auto",height:"calc(100vh - 44px)"}}>
+        <div style={{fontFamily:"'IBM Plex Sans',sans-serif",fontSize:20,fontWeight:700,color:"#e0f0ff",marginBottom:3}}>{PROFILE.name}</div>
+        <div style={{color:"#f0b429",fontSize:11,letterSpacing:1.5,marginBottom:20}}>{PROFILE.title.toUpperCase()}</div>
+        <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:9,marginBottom:16}}>
+          {[["Conversion","29.84%","peak AEP"],["vs Benchmark","+48%","above avg"],["States","36","active licenses"],["Experience","6+ Yrs","AEP/OEP"]].map(([l,v,s])=>(
+            <div className="sc" key={l}>
+              <div style={{color:"#f0b429",fontSize:20,fontWeight:700,fontFamily:"'IBM Plex Sans',sans-serif"}}>{v}</div>
+              <div style={{color:"#ddeeff",fontSize:11,marginTop:3}}>{l}</div>
+              <div style={{color:"#2a3a50",fontSize:10,marginTop:2}}>{s}</div>
+            </div>
+          ))}
+        </div>
+        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:9}}>
+          {[["Specialties",PROFILE.specialties,"#1a2e20","#64d2a4"],["CRM & Tech",PROFILE.crm,"#141828","#7eb8f7"],["Certifications",PROFILE.certifications,"#221610","#f0b429"]].map(([l,items,bg,color])=>(
+            <div className="sc" key={l}>
+              <div style={{color:"#2a3a50",fontSize:9,letterSpacing:2,textTransform:"uppercase",marginBottom:8}}>{l}</div>
+              <div style={{display:"flex",flexWrap:"wrap",gap:5}}>{items.map(s=><span key={s} className="bx" style={{background:bg,color}}>{s}</span>)}</div>
+            </div>
+          ))}
+          <div className="sc">
+            <div style={{color:"#2a3a50",fontSize:9,letterSpacing:2,textTransform:"uppercase",marginBottom:8}}>Contact</div>
+            <div style={{display:"flex",flexDirection:"column",gap:5,color:"#6a8aa0",fontSize:12}}>
+              <div>{PROFILE.phone}</div><div>{PROFILE.email}</div>
+              <div style={{color:"#2a3a50",fontSize:10.5}}>NPN: {PROFILE.npn}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    )}
+
+    {/* ════════════════════════════════════════
+        TARGET COMPANIES
+    ════════════════════════════════════════ */}
+    {activeTab==="companies"&&(
+      <div style={{padding:26,overflowY:"auto",height:"calc(100vh - 44px)"}}>
+        <div style={{display:"flex",alignItems:"center",gap:11,marginBottom:14}}>
+          <div style={{fontFamily:"'IBM Plex Sans',sans-serif",fontSize:14,fontWeight:700,color:"#ddeeff"}}>Target Employer List</div>
+          <div style={{display:"flex",gap:5}}>
+            {["all","1","2"].map(f=>(
+              <button key={f} onClick={()=>setFilter(f)} aria-pressed={filter===f}
+                style={{background:filter===f?"#141928":"none",border:filter===f?"1px solid #f0b429":"1px solid #1e2a3a",color:filter===f?"#f0b429":"#4a5a70",padding:"3px 10px",borderRadius:3,cursor:"pointer",fontSize:9,fontFamily:"'IBM Plex Mono',monospace",letterSpacing:1}}>
+                {f==="all"?"ALL":`TIER ${f}`}
+              </button>
+            ))}
+          </div>
+        </div>
+        <div style={{border:"1px solid #141c28",borderRadius:6,overflow:"hidden"}}>
+          <div style={{display:"grid",gridTemplateColumns:"22px 1fr 110px 100px 1fr",padding:"8px 12px",background:"#0a0d14",color:"#2a3a50",fontSize:8.5,letterSpacing:2,textTransform:"uppercase",borderBottom:"1px solid #141c28"}}>
+            <div/><div>Company</div><div>Type</div><div>Focus</div><div>Notes</div>
+          </div>
+          {filteredCos.map(c=>(
+            <div key={c.name} style={{display:"grid",gridTemplateColumns:"22px 1fr 110px 100px 1fr",padding:"10px 12px",borderBottom:"1px solid #0e141e",alignItems:"center"}}>
+              <span className="bx" style={{background:"transparent",color:TC[c.tier],border:`1px solid ${TC[c.tier]}28`,fontSize:8.5,padding:"1px 4px"}}>{c.tier}</span>
+              <div style={{fontFamily:"'IBM Plex Sans',sans-serif",fontWeight:700,color:"#b8d0e8",fontSize:13}}>{c.name}</div>
+              <div style={{color:"#3a4a60",fontSize:11}}>{c.type}</div>
+              <span className="bx" style={{background:"#101828",color:"#6aaad8"}}>{c.focus.split("/")[0]}</span>
+              <div style={{color:"#3a5060",fontSize:11,fontFamily:"'IBM Plex Sans',sans-serif"}}>{c.notes}</div>
+            </div>
+          ))}
+        </div>
+        <div style={{marginTop:9,color:"#1e2e40",fontSize:10}}>All companies are remote W2 + commission eligible. Tier 1 = highest comp upside.</div>
+      </div>
+    )}
+
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
+</script>
+</body>
+</html>
