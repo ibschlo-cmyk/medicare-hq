@@ -61,10 +61,32 @@ Aetna's current public C-SNP materials describe features such as:
 
 These are **not** safe as exact member-level promises without the member's contract/PBP and EOC. Aetna itself states that SSBCI eligibility standards and benefit conditions vary by benefit and plan.
 
+## `Market Prominence -> C-SNP` trainer-note clarification
+
+The phrase **MarketProminence** has a strong public match to **MHK MarketProminence®**, a Medicare Advantage / Part D administration platform. MHK publicly describes MarketProminence as supporting:
+
+- enrollment and member maintenance;
+- premium billing;
+- financial reconciliation; and
+- web-portal/workflow functions for Medicare Advantage and Part D plans.
+
+Public MHK source: https://info.mhk.com/hubfs/web-documents/MHK-Product-Literature-Corporate-Overview-Brochure-230706.pdf
+
+### What this does — and does not — establish
+
+**Established externally:** `MarketProminence` is a Medicare plan administration/enrollment platform name, not a C-SNP category or geographic “market” term.
+
+**Reasonable interpretation of the handwritten note:** `Market Prominence -> C-SNP` may be a reminder to use a MarketProminence system/workflow when handling C-SNP enrollment/member-maintenance information.
+
+**Not established:** the public MHK material does not prove Aetna's specific internal implementation, screen path, permissions, or that this is the only C-SNP system used by the Member Services queue. The trainer note therefore remains **internal-workflow derived** until a current Aetna screen or controlled procedure confirms the exact usage.
+
+This finding also means the phrase should **not** be used to infer the C-SNP's state, market, contract number, or PBP.
+
 ## Still unresolved
 
 - Exact 2026 C-SNP contract/PBP handled by this Member Services queue
-- State/market(s) tied to the internal cue `Market Prominence -> C-SNP`
+- Exact Aetna internal purpose/path for MarketProminence on C-SNP calls
+- Exact state/market for the C-SNP call population
 - Exact EOC/Member Handbook
 - Exact Extra Benefits Card amount/categories
 - Plan-specific vision/hearing/dental vendors and limits
@@ -72,4 +94,4 @@ These are **not** safe as exact member-level promises without the member's contr
 
 ## Next capture needed
 
-The highest-value next item is a non-PII screen/photo showing the **C-SNP contract/PBP** and state/market. Once that is known, this generic baseline should be replaced by the exact plan EOC branch just as with `H9314-001`, `H9771-001`, `H1610-001`, and `H6399-001`.
+The highest-value next item is a non-PII screen/photo showing the **C-SNP contract/PBP** and state/market. A second high-value capture is the screen that shows where **MarketProminence** appears in the actual C-SNP workflow. Once the contract/PBP is known, this generic baseline should be replaced by the exact plan EOC branch just as with `H9314-001`, `H9771-001`, `H1610-001`, and `H6399-001`.
