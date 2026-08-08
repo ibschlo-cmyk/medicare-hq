@@ -4,7 +4,7 @@
 **Updated:** 2026-08-08  
 **Scope:** Four currently identified Aetna Member Services D-SNP plans  
 
-> Use the exact 2026 Evidence of Coverage (EOC) / Member Handbook plus current controlled Aetna workflow before quoting a benefit, vendor, deadline, routing path, or member responsibility.
+> Use the exact 2026 Evidence of Coverage (EOC) / Member Handbook plus current controlled Aetna workflow before quoting a benefit, vendor, deadline, routing path, or member responsibility. When a current plan website and an older plan-document contact differ, preserve the conflict and use the current controlled Aetna workflow rather than silently choosing a number.
 
 ## Plan anchors and exact EOCs
 
@@ -35,11 +35,11 @@ For approved OTC/Extra Supports purchasing, the 2026 EOCs point to `CVS.com/Aetn
 | Michigan `H9314-001` | **$250/year** prescription-eyewear allowance; VSP network; one non-Medicare refraction yearly | One routine hearing exam/year; one fitting/evaluation/year; **up to $1,500 per ear/year** through NationsHearing |
 | Illinois `H9771-001` | **$200/year** prescription-eyewear allowance; **March Vision** network; one non-Medicare refraction yearly | One routine hearing exam/year; one fitting/evaluation/year; **up to $1,000 per ear/year** through NationsHearing |
 | Virginia `H1610-001` | Medicare EOC directs the reader to the Medicaid Member Handbook for additional vision-benefit detail | Medicare EOC directs the reader to the Medicaid Member Handbook for additional hearing-benefit detail |
-| New Jersey `H6399-001` | Medicaid-integrated vision schedule; replacement lenses/frames frequency varies by age | Medicaid-integrated hearing coverage includes routine/diagnostic exams, hearing aids, fittings, follow-up and repairs; no universal dollar allowance is stated in the cited section |
+| New Jersey `H6399-001` | **MARCH Vision** manages vision benefits; current member plan page lists routine/diagnostic exams, eyeglasses and contacts. Current member-facing provider-help number: **1-888-686-0274** (TTY 1-877-627-2456), M-F 8 AM-5 PM ET. | Current plan page lists routine/diagnostic exams plus hearing aids, fittings and accessories; no Michigan-style universal dollar allowance is stated. |
 
 ### Consequence
 
-The handwritten training values **“$250 glasses”** and **“$1,500 hearing”** are validated for Michigan `H9314-001`, but **not universal**. Illinois differs materially: $200 vision and $1,000-per-ear hearing.
+The handwritten training values **“$250 glasses”** and **“$1,500 hearing”** are validated for Michigan `H9314-001`, but **not universal**. Illinois differs materially: $200 vision and $1,000-per-ear hearing. New Jersey uses MARCH Vision but follows its own integrated benefit schedule.
 
 ## Dental
 
@@ -47,20 +47,24 @@ Michigan, Illinois, and Virginia 2026 EOCs identify **DentaQuest** for dental-ne
 
 The handwritten training number `888-278-7310` does not appear in any of the four exact EOCs searched. Preserve it only as a trainer-derived lead until its current function and plan applicability are confirmed through controlled Aetna guidance.
 
-New Jersey's exact EOC does not use DentaQuest in the searched dental text, reinforcing that vendor routing must branch by state/plan.
+**New Jersey `H6399-001` is different:** the current Aetna FIDE member site states that **LIBERTY Dental** manages dental benefits. Current member-facing LIBERTY Dental help number: **1-888-352-7924**, M-F 8 AM-5 PM. Do not route New Jersey dental calls to DentaQuest merely because DentaQuest appears in the other states.
 
-## Transportation
+## Transportation — current-source reconciliation
 
-| Plan | Public 2026 source finding |
-|---|---|
-| Michigan `H9314-001` | HIDE EOC covers transportation and tells members to use their Care Coordinator / Member Services for help. The separate current Aetna Better Health of Michigan Medicaid ride page identifies **MTM — 1-844-610-7437** and says regular rides should be requested **at least 3 business days in advance**. Treat that as Michigan Medicaid-side routing, not an automatic substitute for the HIDE internal workflow. |
-| Illinois `H9771-001` | **MTM Health — 1-855-814-1699 (TTY 711), Monday-Friday, 7 AM-8 PM local time** for rides to health-care visits and plan-approved locations |
-| Virginia `H1610-001` | Medicare EOC contains transportation coverage but directs readers to the Medicaid Member Handbook for additional benefit detail; exact vendor routing remains Medicaid-source dependent |
-| New Jersey `H6399-001` | Medicaid Fee-for-Service directly covers non-emergency transportation; **Modivcare — 1-866-527-9933** arranges transportation |
+| Plan | Current safest public member route | Red-team note |
+|---|---|---|
+| Michigan `H9314-001` | **HIDE Member Services/Care Coordinator: 1-855-676-5772**; current HIDE-specific provider-search page says ask at least **3 business days** before the ride is needed. | A separate Michigan Medicaid page uses MTM **1-844-610-7437**; another Michigan transition/legacy page shows a different direct MTM number. Do not hard-code a direct vendor line into the HIDE desk aid until the current controlled HIDE workflow identifies which line to use. |
+| Illinois `H9771-001` | **Member Services/Care Coordinator: 1-866-600-2139**; current FIDE provider page also lists **MTM 1-888-513-1612**, 24/7, and says request at least **3 days** before the appointment. | Exact 2026 EOC research previously surfaced a different MTM number (`1-855-814-1699`). Because current Aetna web routing is newer, preserve the conflict and use current controlled workflow for direct vendor routing. |
+| Virginia `H1610-001` | **Member Services: 1-855-463-0933**; Medicare EOC says $0 NEMT and directs to Medicaid materials for additional detail. | Medicaid-source / internal routing still controls the exact ride vendor/process. |
+| New Jersey `H6399-001` | Current FIDE member site says **call 1-844-362-0934** for help setting up a ride. | Exact EOC identifies Medicaid FFS / Modivcare for non-emergency transportation. Use current internal workflow to decide whether to arrange through Member Services or give/conference the direct Medicaid transportation vendor. |
 
 ### Michigan trainer-note reconciliation
 
-The previously unplaced note `MTM — 844-610-7437` plus “3 days prior” now has a strong public-source match: Aetna Better Health of Michigan's current Medicaid ride page gives that MTM number and a **3-business-day** advance-request rule. An older Aetna Michigan NEMT FAQ at the same number uses Access2Care branding and says Michigan Medicare members should call Aetna Member Services and follow the prompts to the reservation line. Because the HIDE EOC itself routes help through the Care Coordinator / Member Services, use the current controlled HIDE workflow to determine whether the representative should transfer, conference, or provide the Medicaid ride line directly.
+The trainer note `MTM — 844-610-7437` plus “3 days prior” has a strong public-source match to the current **Michigan Medicaid** ride page: MTM `1-844-610-7437`, regular rides at least three business days in advance. That validates the note's likely origin, but not universal HIDE direct-dial usage.
+
+### Operational rule
+
+**For rides, plan/state first; current Member Services/Care Coordinator routing is safer than memorizing a vendor number.** Direct-vendor numbers can differ by product, source date and Medicare-vs-Medicaid responsibility.
 
 ## Michigan in-home support — 40-hour note validated
 
@@ -74,14 +78,14 @@ This validates the substance of the handwritten **“40 hours in-home”** note 
 
 ## Personal emergency response system (PERS)
 
-| Plan | Exact 2026 EOC finding |
+| Plan | Current 2026 finding |
 |---|---|
 | Michigan `H9314-001` | $0 PERS benefit with in-home/mobile GPS/smartwatch equipment, monitoring/customer service, optional fall detection and lockbox; EOC says call Care Manager or Member Services |
 | Illinois `H9771-001` | Same general $0 PERS benefit structure; EOC says call Care Manager or Member Services |
 | Virginia `H1610-001` | The searched Medicare EOC did not return the same PERS benefit label; additional Medicaid-source research is required before quoting it |
-| New Jersey `H6399-001` | $0 PERS benefit appears in the EOC; MLTSS also lists PERS among home/community-based services and directs members to Care Manager for eligibility questions |
+| New Jersey `H6399-001` | **LifeStation is now current Aetna plan-site verified as the PERS provider.** Current Aetna 2026 NJ plan materials say the $0 benefit includes in-home/mobile GPS equipment, shipping/fulfillment, monitoring and customer service. |
 
-`LifeStation — 800-998-2400` is a valid LifeStation customer-service number on LifeStation's public website, but **LifeStation is not named in the searched 2026 EOC PERS sections**. Do not present LifeStation as the plan's PERS vendor until controlled Aetna guidance confirms the relationship.
+LifeStation's own current website confirms customer service/technical support at **1-800-998-2400**. For New Jersey, the vendor relationship and vendor phone are therefore independently supported. Current Aetna Member Services workflow still controls whether the representative should transfer, conference, or give the number directly.
 
 ## Helper Bees note — vendor identity vs. plan benefit
 
@@ -157,9 +161,9 @@ The trainer note **1-866-799-3832, M-F 8 AM-8 PM** is supported in the Michigan 
 - Internal use of ProPAT / MedCompass versus public provider-facing PA routes
 - Current pharmacy/Rx internal workflow
 - Whether The Helper Bees is the contracted in-home support vendor for any of these exact plans
-- Whether LifeStation is the contracted PERS vendor for any of these exact plans
 - `Care Management — 844-596-6440` and its exact scope
-- Exact HIDE internal handling of the Michigan Medicaid MTM number `1-844-610-7437`
+- Exact HIDE direct-transport vendor line and internal transfer/conference instruction for Michigan
+- Exact current direct MTM line/internal routing for Illinois, given the public source conflict
 - Complete COE G&A email/routing by plan; Virginia exact EOC confirms `COEGandA@aetna.com`, but other states must be checked separately
 - Any vendor or internal number not supported by the exact plan EOC or current controlled Aetna workflow
 
