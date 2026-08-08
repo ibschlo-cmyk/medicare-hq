@@ -3,7 +3,7 @@
 **Updated:** 2026-08-08  
 **Purpose:** Track which internal Aetna workflow areas have source material available without publishing proprietary procedures, authentication logic, internal system navigation, restricted contacts, or member-record release procedures.
 
-> This file intentionally contains **no member-authentication identifiers, internal screen-by-screen instructions, restriction/password handling, proprietary PHI-release steps, call-tracking templates, transfer queues, or internal email addresses**. Those details remain in the private working source layer and current controlled Aetna desktop.
+> This file intentionally contains **no member-authentication identifiers, internal screen-by-screen instructions, restriction/password handling, proprietary PHI-release steps, call-tracking templates, transfer queues, internal email addresses, access PINs, or non-public direct-dial matrices**. Those details remain in the private working source layer and current controlled Aetna desktop.
 
 ## Verification Process — source status upgraded
 
@@ -54,17 +54,72 @@ The workflow distinguishes a limited/simple records request from a broader or co
 
 The exact date-span thresholds, internal ordering system, form identifiers, internal email routing, data elements collected, and call-code/resolution-code details are intentionally excluded from the public repository.
 
+## COE Benefit Summary 2026 — source status upgraded
+
+Four newly supplied screenshots show an internal SharePoint workbook titled **COE Benefit Summary 2026**. The visible workbook includes state/plan sections for:
+
+- Illinois
+- Michigan
+- Virginia
+- New Jersey FIDE SNP
+- I-SNP plans
+- New York FIDE MAP
+
+It also visibly retains an **Ohio — termed 12.31.25** tab, consistent with the project's separate finding that the old Ohio line is not part of the active 2026 queue.
+
+### Operational scope visible in the workbook
+
+The screenshots show that the workbook is intended as a current COE routing/reference matrix covering categories such as:
+
+- health-plan website / plan-document links;
+- nurse-line and crisis resources;
+- dental and hearing vendors;
+- enrollment resources;
+- language-support resources;
+- ProPAT access;
+- mail-order pharmacy;
+- Member Handbook / Evidence of Coverage links;
+- Member Services contact channels;
+- OTC routing;
+- state enrollment resources;
+- transportation vendors;
+- vision vendors;
+- formulary search tools; and
+- plan-specific pharmacy-processing information.
+
+The exact direct-dial numbers, internal email, access PINs, and plan-processing values are retained only in the private second-brain layer.
+
+### Important internal inconsistency
+
+The Michigan column header visibly says **Aetna Medicare FIDE**, while multiple links within the same Michigan column are labeled **Aetna Medicare HIDE (MI)**, including the Member Handbook and formulary-search references.
+
+This is treated as a **source-level inconsistency**, not as evidence that Michigan changed from HIDE to FIDE. The exact 2026 Michigan plan document / EOC remains the controlling plan-level source for the integration label, and the project continues to map Michigan as HIDE.
+
+### Vendor-routing consequence
+
+This internal 2026 workbook materially narrows the earlier vendor gap: it supplies plan/state-specific COE contact entries for transportation, dental, vision, OTC and other services across the four active D-SNP anchors.
+
+It also confirms the project's red-team rule that a single universal vendor strip is unsafe. Some internal direct-dial entries differ from public EOC/provider-page contacts previously found. For live-call routing, **current controlled Aetna workflow/reference material should govern the rep's direct-dial, transfer or conference path**, while the exact 2026 EOC remains controlling for plan benefits, coverage rules and member rights.
+
+### Credential/publication safeguard
+
+The screenshots contain language-service access PINs and other non-public operational details. Those values are intentionally excluded from public GitHub and should not be reproduced in a coworker-facing public artifact unless Aetna specifically authorizes that distribution.
+
 ## Public-safe live-call sequence
 
 The desk aid may safely state only the high-level dependency:
 
+`Authenticate under current Aetna process -> identify exact plan/state -> open exact plan document / current COE reference -> identify call reason -> use plan-specific benefit/vendor/system route -> resolve, conference, transfer or escalate under controlled workflow -> document`
+
+For PHI-copy requests specifically:
+
 `Authenticate under current Aetna process -> identify whether the member wants an explanation or an actual copy of records -> if copy requested, determine whether the request qualifies for the current simple-record fulfillment route or requires the formal PHI-access process -> submit through current controlled workflow -> document`
 
-This prevents a common workflow error: treating **"explain my claim/EOB"** and **"send me copies of my PHI/claim records"** as the same task.
+This prevents two common workflow errors: treating **"explain my claim/EOB"** and **"send me copies of my PHI/claim records"** as the same task, and treating one state's vendor line as universal across all FIDE/HIDE calls.
 
 ## Documentation source relationship
 
-Both supplied internal sources route the representative back into Aetna's existing call-documentation standards and required templates. This reinforces the project rule:
+The supplied internal sources route the representative back into Aetna's existing call-documentation standards and required templates. This reinforces the project rule:
 
 **Do not create a replacement note template. Use the current Aetna-required template/workflow.**
 
@@ -82,9 +137,9 @@ The following remain controlled/internal and should be captured from current Aet
 - MedCompass Rx workflow;
 - current G&A intake/queue/status workflow;
 - assigned Care Manager lookup / referral workflow;
-- current vendor conference/transfer instructions by plan;
+- current vendor **conference/transfer procedure** by plan (the contact matrix itself is now substantially sourced);
 - C-SNP MarketProminence workflow and exact contract/PBP.
 
 ## Publication rule
 
-Internal screenshots and proprietary procedures are source material for the **private second-brain layer only**. Public GitHub may record that a controlled source exists, its visible scope/date, and the resulting high-level workflow dependency, but must not reproduce the operational procedure itself.
+Internal screenshots and proprietary procedures are source material for the **private second-brain layer only**. Public GitHub may record that a controlled source exists, its visible scope/date, source conflicts, and resulting high-level workflow dependency, but must not reproduce the operational procedure, access credentials, internal-only contact matrix, or proprietary workflow text.
