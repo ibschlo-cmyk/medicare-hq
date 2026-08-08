@@ -51,16 +51,64 @@ New Jersey's exact EOC does not use DentaQuest in the searched dental text, rein
 
 ## Transportation
 
-| Plan | Public 2026 EOC finding |
+| Plan | Public 2026 source finding |
 |---|---|
-| Michigan `H9314-001` | Transportation benefits are covered; the EOC also directs members needing transportation help to their care coordinator. Do not infer a universal scheduling vendor from another state. |
+| Michigan `H9314-001` | HIDE EOC covers transportation and tells members to use their Care Coordinator / Member Services for help. The separate current Aetna Better Health of Michigan Medicaid ride page identifies **MTM — 1-844-610-7437** and says regular rides should be requested **at least 3 business days in advance**. Treat that as Michigan Medicaid-side routing, not an automatic substitute for the HIDE internal workflow. |
 | Illinois `H9771-001` | **MTM Health — 1-855-814-1699 (TTY 711), Monday-Friday, 7 AM-8 PM local time** for rides to health-care visits and plan-approved locations |
 | Virginia `H1610-001` | Medicare EOC contains transportation coverage but directs readers to the Medicaid Member Handbook for additional benefit detail; exact vendor routing remains Medicaid-source dependent |
 | New Jersey `H6399-001` | Medicaid Fee-for-Service directly covers non-emergency transportation; **Modivcare — 1-866-527-9933** arranges transportation |
 
+### Michigan trainer-note reconciliation
+
+The previously unplaced note `MTM — 844-610-7437` plus “3 days prior” now has a strong public-source match: Aetna Better Health of Michigan's current Medicaid ride page gives that MTM number and a **3-business-day** advance-request rule. An older Aetna Michigan NEMT FAQ at the same number uses Access2Care branding and says Michigan Medicare members should call Aetna Member Services and follow the prompts to the reservation line. Because the HIDE EOC itself routes help through the Care Coordinator / Member Services, use the current controlled HIDE workflow to determine whether the representative should transfer, conference, or provide the Medicaid ride line directly.
+
+## Michigan in-home support — 40-hour note validated
+
+Michigan `H9314-001` contains a Special Supplemental Benefit titled **Help with Certain Chronic Conditions In-Home Support – Personal Care Services**.
+
+Eligibility is care-management based. The EOC requires active participation in Aetna Care Management; a Care Coordinator or physician assessment showing the member needs assistance with more than one ADL; and at least one additional criterion such as fragile informal support, repeated falls/instability, or a reasonable expectation that the service will maintain or improve function.
+
+Qualified members may receive **up to 40 hours of in-home support personal care services per year at $0**. Covered help may include meal preparation, light housekeeping, walking/mobility help, personal care/hygiene, medication reminders, and other ADL-focused support. **If the member qualifies, the Care Coordinator sets up the services.**
+
+This validates the substance of the handwritten **“40 hours in-home”** note for Michigan `H9314-001`. It does **not** independently establish that The Helper Bees is the contracted fulfillment vendor for this plan.
+
+## Personal emergency response system (PERS)
+
+| Plan | Exact 2026 EOC finding |
+|---|---|
+| Michigan `H9314-001` | $0 PERS benefit with in-home/mobile GPS/smartwatch equipment, monitoring/customer service, optional fall detection and lockbox; EOC says call Care Manager or Member Services |
+| Illinois `H9771-001` | Same general $0 PERS benefit structure; EOC says call Care Manager or Member Services |
+| Virginia `H1610-001` | The searched Medicare EOC did not return the same PERS benefit label; additional Medicaid-source research is required before quoting it |
+| New Jersey `H6399-001` | $0 PERS benefit appears in the EOC; MLTSS also lists PERS among home/community-based services and directs members to Care Manager for eligibility questions |
+
+`LifeStation — 800-998-2400` is a valid LifeStation customer-service number on LifeStation's public website, but **LifeStation is not named in the searched 2026 EOC PERS sections**. Do not present LifeStation as the plan's PERS vendor until controlled Aetna guidance confirms the relationship.
+
+## Helper Bees note — vendor identity vs. plan benefit
+
+`888-242-0910` is confirmed by The Helper Bees' own current public support page as its customer-service number. The Helper Bees states that it works with Medicare Advantage and Medicaid programs and coordinates nonmedical in-home support, but benefits depend on the member's individual health plan.
+
+No searched exact EOC names The Helper Bees. Therefore:
+
+- **Michigan 40-hour in-home support benefit:** plan-verified.
+- **The Helper Bees customer-service number:** vendor-verified.
+- **The Helper Bees as the fulfillment vendor for H9314-001 or the other three plans:** still unverified.
+
+## Prior authorization — plan/state routing is different
+
+Current 2026 Aetna plan/provider sources support the following general medical/plan prior-authorization routing. These are provider-facing submission contacts; specialized services or drugs may use different programs, and Member Services representatives should still follow the current internal workflow.
+
+| Plan | Phone | Fax | Public-source workflow |
+|---|---|---|---|
+| Michigan `H9314-001` | **1-855-676-5772** | **1-844-241-2495** | 2026 HIDE PA request form; Availity Essentials preferred; fax/EDI/phone also listed |
+| Illinois `H9771-001` | **1-866-600-2139** | **1-855-320-8445** | 2026 FIDE PA request form; Availity Essentials preferred; fax/EDI/phone also listed |
+| Virginia `H1610-001` | **1-855-463-0933** | **1-833-280-5224** | Current Virginia FIDE provider/manual sources identify this D-SNP PA route; specialized programs may have different fax/vendor paths |
+| New Jersey `H6399-001` | **1-844-362-0934** | **1-833-322-0034** | 2026 FIDE PA request form; current provider material also supports Availity/status checking |
+
 ### Consequence
 
-A universal `MTM` transportation strip is unsafe. The trainer note `MTM — 844-610-7437` must remain **unverified / plan applicability unknown** until current controlled guidance identifies its exact purpose.
+The handwritten Michigan PA note **1-855-676-5772 / fax 1-844-241-2495** is now **public-source verified for Michigan HIDE `H9314-001`**. It must not be generalized to Illinois, Virginia, or New Jersey, whose 2026 PA submission contacts differ.
+
+The separate handwritten Michigan fax that appears to read `855-259-2087` remains unresolved and must not be substituted for the verified 2026 PA fax.
 
 ## “I got a bill” / payment workflow
 
@@ -106,12 +154,12 @@ The trainer note **1-866-799-3832, M-F 8 AM-8 PM** is supported in the Michigan 
 - Exact internal EOC lookup path
 - Required Aetna note-template fields and usage
 - Claim-screen navigation, status vocabulary, corrections/reprocessing, and escalation
-- Current PA workflow in ProPAT / MedCompass
+- Internal use of ProPAT / MedCompass versus public provider-facing PA routes
 - Current pharmacy/Rx internal workflow
-- `Helper Bees — 888-242-0910` and the trainer note “40 hours in-home”
-- `LifeStation — 800-998-2400`
-- `Care Management — 844-596-6440`
-- `MTM — 844-610-7437` and “3 days prior”
+- Whether The Helper Bees is the contracted in-home support vendor for any of these exact plans
+- Whether LifeStation is the contracted PERS vendor for any of these exact plans
+- `Care Management — 844-596-6440` and its exact scope
+- Exact HIDE internal handling of the Michigan Medicaid MTM number `1-844-610-7437`
 - Complete COE G&A email/routing
 - Any vendor or internal number not supported by the exact plan EOC or current controlled Aetna workflow
 
