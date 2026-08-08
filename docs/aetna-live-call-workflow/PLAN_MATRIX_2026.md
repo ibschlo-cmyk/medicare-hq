@@ -108,7 +108,7 @@ Current 2026 Aetna plan/provider sources support the following general medical/p
 
 The handwritten Michigan PA note **1-855-676-5772 / fax 1-844-241-2495** is now **public-source verified for Michigan HIDE `H9314-001`**. It must not be generalized to Illinois, Virginia, or New Jersey, whose 2026 PA submission contacts differ.
 
-The separate handwritten Michigan fax that appears to read `855-259-2087` remains unresolved and must not be substituted for the verified 2026 PA fax.
+The separate handwritten Michigan fax **1-855-259-2087** is also public-plan verified, but it is **not the medical PA fax**. The exact Michigan EOC lists it as the **Member Services fax** and as the **Best Available Evidence (BAE/LIS) documentation fax**. Keep it separate from the verified Michigan medical PA fax `1-844-241-2495`.
 
 ## “I got a bill” / payment workflow
 
@@ -160,7 +160,7 @@ The trainer note **1-866-799-3832, M-F 8 AM-8 PM** is supported in the Michigan 
 - Whether LifeStation is the contracted PERS vendor for any of these exact plans
 - `Care Management — 844-596-6440` and its exact scope
 - Exact HIDE internal handling of the Michigan Medicaid MTM number `1-844-610-7437`
-- Complete COE G&A email/routing
+- Complete COE G&A email/routing by plan; Virginia exact EOC confirms `COEGandA@aetna.com`, but other states must be checked separately
 - Any vendor or internal number not supported by the exact plan EOC or current controlled Aetna workflow
 
 ## Working desk-aid rule
